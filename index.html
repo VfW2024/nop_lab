@@ -1,0 +1,3061 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      CNTT 4.0 Hub | Thư Viện Số & Trợ Lý Ghi Chú AI - FPT Polytechnic
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+            },
+            colors: {
+              fpt: {
+                navy: "#0F172A",
+                blue: "#1E3A8A",
+                orange: "#F97316",
+                orangeHover: "#EA580C",
+                light: "#F8FAFC",
+                surface: "#FFFFFF",
+              },
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /* Custom Scrollbar for smooth EdTech experience */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f5f9;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+      }
+      .fade-in {
+        animation: fadeIn 0.3s ease-in-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(6px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-orange-500 selection:text-white"
+  >
+    <!-- Toast Notification Container (Replaces alert) -->
+    <div
+      id="toast-container"
+      class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"
+    ></div>
+
+    <!-- Top Navigation Bar -->
+    <header
+      class="sticky top-0 z-40 bg-slate-900 text-white shadow-lg border-b border-slate-800"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <!-- Brand Logo -->
+          <div class="flex items-center gap-3">
+            <button
+              id="mobile-menu-btn"
+              class="lg:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 focus:outline-none"
+            >
+              <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <div
+              class="flex items-center gap-2.5 cursor-pointer"
+              onclick="switchMainTab('library')"
+            >
+              <div
+                class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-600 flex items-center justify-center shadow-md shadow-orange-500/20"
+              >
+                <i class="fa-solid fa-microchip text-white text-lg"></i>
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-extrabold tracking-tight text-lg text-white"
+                    >CNTT 4.0</span
+                  >
+                  <span
+                    class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30"
+                    >FPoly Hub</span
+                  >
+                </div>
+                <p class="text-[11px] text-slate-400 hidden sm:block">
+                  Thư viện số & Trợ lý học tập cá nhân
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Module Switcher Tabs -->
+          <nav
+            class="hidden md:flex items-center bg-slate-800/80 p-1 rounded-xl border border-slate-700/70"
+          >
+            <button
+              onclick="switchMainTab('library')"
+              id="tab-btn-library"
+              class="main-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 bg-orange-500 text-white shadow-sm"
+            >
+              <i class="fa-solid fa-book-open"></i>
+              <span>1. Thư viện 8 Bài học</span>
+            </button>
+            <button
+              onclick="switchMainTab('notes')"
+              id="tab-btn-notes"
+              class="main-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-300 hover:text-white"
+            >
+              <i class="fa-solid fa-wand-magic-sparkles text-orange-400"></i>
+              <span>2. Quản lý Ghi chú & AI</span>
+              <span
+                id="nav-note-count"
+                class="ml-1 px-1.5 py-0.5 text-[10px] rounded-full bg-slate-700 text-orange-300"
+                >10</span
+              >
+            </button>
+            <button
+              onclick="switchMainTab('wireframe')"
+              id="tab-btn-wireframe"
+              class="main-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-300 hover:text-white"
+            >
+              <i class="fa-solid fa-diagram-project"></i>
+              <span>3. Phác thảo & Bảo vệ </span>
+            </button>
+          </nav>
+
+          <!-- Overall Learning Progress -->
+          <div class="flex items-center gap-3">
+            <div class="hidden sm:flex flex-col items-end">
+              <div
+                class="flex items-center gap-1.5 text-xs font-medium text-slate-300"
+              >
+                <span>Tiến độ hoàn thành:</span>
+                <span id="progress-text" class="font-bold text-orange-400"
+                  >0/8 Bài</span
+                >
+              </div>
+              <div
+                class="w-32 h-2 bg-slate-800 rounded-full overflow-hidden mt-1 border border-slate-700"
+              >
+                <div
+                  id="progress-bar"
+                  class="h-full bg-gradient-to-r from-orange-500 to-amber-400 transition-all duration-500"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+            <button
+              onclick="exportFullAssignmentReport()"
+              title="Xuất báo cáo Assignment"
+              class="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors flex items-center gap-2 text-xs font-semibold"
+            >
+              <i class="fa-solid fa-file-export text-orange-400"></i>
+              <span class="hidden xl:inline">Xuất Báo Cáo</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Secondary Tab Switcher -->
+        <div
+          class="flex md:hidden items-center justify-between gap-1 pb-3 overflow-x-auto"
+        >
+          <button
+            onclick="switchMainTab('library')"
+            id="m-tab-btn-library"
+            class="flex-1 py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-orange-500 text-white whitespace-nowrap text-center"
+          >
+            <i class="fa-solid fa-book-open mr-1"></i>8 Bài học
+          </button>
+          <button
+            onclick="switchMainTab('notes')"
+            id="m-tab-btn-notes"
+            class="flex-1 py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 whitespace-nowrap text-center"
+          >
+            <i class="fa-solid fa-robot mr-1"></i>Ghi chú AI
+          </button>
+          <button
+            onclick="switchMainTab('wireframe')"
+            id="m-tab-btn-wireframe"
+            class="flex-1 py-1.5 px-2.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 whitespace-nowrap text-center"
+          >
+            <i class="fa-solid fa-sitemap mr-1"></i>Phác thảo Y4
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <!-- ===================================================================== -->
+      <!-- MODULE 1: THƯ VIỆN SỐ & HỆ THỐNG 8 BÀI HỌC CHI TIẾT (PHẦN 1)          -->
+      <!-- ===================================================================== -->
+      <section id="module-library" class="fade-in">
+        <div class="flex flex-col lg:flex-row gap-6">
+          <!-- Sidebar Navigation for 8 Lessons -->
+          <aside
+            id="lesson-sidebar"
+            class="fixed inset-y-0 left-0 z-30 w-80 bg-white border-r border-slate-200 p-4 transform -translate-x-full transition-transform duration-300 lg:translate-x-0 lg:static lg:w-80 lg:rounded-2xl lg:border lg:shadow-sm lg:h-fit lg:sticky lg:top-20 overflow-y-auto max-h-screen lg:max-h-[calc(100vh-6rem)]"
+          >
+            <div
+              class="flex items-center justify-between lg:hidden mb-4 pb-3 border-b border-slate-100"
+            >
+              <span class="font-bold text-slate-900">Danh sách 8 Bài học</span>
+              <button
+                id="close-sidebar-btn"
+                class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100"
+              >
+                <i class="fa-solid fa-xmark text-lg"></i>
+              </button>
+            </div>
+
+            <div class="mb-4">
+              <div class="flex items-center justify-between">
+                <h2
+                  class="text-xs font-bold uppercase tracking-wider text-slate-400"
+                >
+                  Thư viện số môn học (Y1)
+                </h2>
+                <span
+                  class="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md"
+                  >8 Chuyên đề</span
+                >
+              </div>
+              <p class="text-xs text-slate-500 mt-1">
+                Chọn bài học để xem nội dung chi tiết, nguồn tham khảo và ghi
+                chú nhanh.
+              </p>
+            </div>
+
+            <!-- Lesson List Container -->
+            <div id="lesson-nav-list" class="space-y-1.5">
+              <!-- Dynamically populated by JS -->
+            </div>
+
+            <!-- NotebookLM & Extension Card (Y1 & Y3) -->
+            <div
+              class="mt-6 p-3.5 rounded-xl bg-gradient-to-br from-slate-900 to-blue-950 text-white border border-slate-800"
+            >
+              <div
+                class="flex items-center gap-2 text-orange-400 text-xs font-bold mb-1"
+              >
+                <i class="fa-solid fa-brain"></i>
+                <span>Trợ lý Google NotebookLM</span>
+              </div>
+              <p class="text-[11px] text-slate-300 leading-relaxed mb-2.5">
+                Đồng bộ toàn bộ 8 slide bài giảng, tài liệu PDF và ghi chú cá
+                nhân vào không gian tri thức AI.
+              </p>
+              <a
+                href="https://notebooklm.google.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="w-full py-2 px-3 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-colors"
+              >
+                <span>Mở NotebookLM</span>
+                <i
+                  class="fa-solid fa-arrow-up-right-from-square text-[10px]"
+                ></i>
+              </a>
+            </div>
+          </aside>
+
+          <!-- Backdrop for mobile sidebar -->
+          <div
+            id="sidebar-backdrop"
+            class="fixed inset-0 bg-slate-900/50 z-20 hidden lg:hidden"
+            onclick="toggleMobileSidebar(false)"
+          ></div>
+
+          <!-- Main Lesson Viewer Area -->
+          <div class="flex-1 min-w-0">
+            <div id="lesson-content-area" class="space-y-6">
+              <!-- Dynamically populated with rich lesson content -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- MODULE 2: ỨNG DỤNG QUẢN LÝ GHI CHÚ CÁ NHÂN THÔNG MINH & AI (PHẦN 2)   -->
+      <!-- ===================================================================== -->
+      <section id="module-notes" class="hidden fade-in space-y-6">
+        <!-- Header Banner & Stats -->
+        <div
+          class="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 rounded-2xl p-6 text-white shadow-lg border border-slate-800"
+        >
+          <div
+            class="flex flex-col md:flex-row md:items-center justify-between gap-4"
+          >
+            <div>
+              <div
+                class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-300 text-xs font-semibold mb-2"
+              >
+                <i class="fa-solid fa-sparkles"></i>
+                <span
+                  >Assignment Phần 2: Yêu cầu Y5 & Y6 (AI-Powered Notes)</span
+                >
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                SmartNote AI — Quản Lý Ghi Chú Học Tập
+              </h1>
+              <p class="text-slate-300 text-sm mt-1 max-w-2xl">
+                Hệ thống quản lý tri thức cá nhân tích hợp Trợ lý AI: Tự động
+                tóm tắt, gắn thẻ thông minh (Auto-Tagging) và sinh câu hỏi ôn
+                tập trắc nghiệm/Flashcard từ ghi chú của bạn.
+              </p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <button
+                onclick="openNoteModal()"
+                class="px-5 py-3 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm shadow-lg shadow-orange-500/25 transition-all flex items-center gap-2"
+              >
+                <i class="fa-solid fa-plus"></i>
+                <span>Tạo Ghi Chú Mới</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Metrics satisfying Y5 (Min 10 notes, Min 5 days) -->
+          <div
+            class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-5 border-t border-slate-800/80"
+          >
+            <div
+              class="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50"
+            >
+              <div class="text-xs text-slate-400">
+                Tổng số ghi chú (Y5a ≥ 10)
+              </div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span
+                  id="stat-total-notes"
+                  class="text-2xl font-extrabold text-white"
+                  >10</span
+                >
+                <span
+                  class="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded"
+                  >Đạt chuẩn</span
+                >
+              </div>
+            </div>
+            <div
+              class="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50"
+            >
+              <div class="text-xs text-slate-400">
+                Chuỗi ngày học tập (Y5b ≥ 5)
+              </div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span
+                  id="stat-total-days"
+                  class="text-2xl font-extrabold text-orange-400"
+                  >6 Ngày</span
+                >
+                <span
+                  class="text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded"
+                  >Đạt chuẩn</span
+                >
+              </div>
+            </div>
+            <div
+              class="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50"
+            >
+              <div class="text-xs text-slate-400">
+                Ghi chú trọng tâm / Đã ôn
+              </div>
+              <div class="flex items-baseline gap-2 mt-1">
+                <span
+                  id="stat-important-notes"
+                  class="text-2xl font-extrabold text-blue-400"
+                  >0</span
+                >
+                <span class="text-xs text-slate-400">mục tiêu</span>
+              </div>
+            </div>
+            <div
+              class="bg-slate-800/50 rounded-xl p-3 border border-slate-700/50"
+            >
+              <div class="text-xs text-slate-400">Trợ lý AI Google Studio</div>
+              <div class="flex items-center gap-1.5 mt-1.5">
+                <span
+                  class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"
+                ></span>
+                <span class="text-sm font-bold text-emerald-300"
+                  >Sẵn sàng phân tích</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filter, Search & AI Batch Action Toolbar -->
+        <div
+          class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between"
+        >
+          <div class="flex flex-col sm:flex-row gap-3 flex-1">
+            <!-- Search Input -->
+            <div class="relative flex-1">
+              <i
+                class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"
+              ></i>
+              <input
+                type="text"
+                id="note-search-input"
+                oninput="renderNotesList()"
+                placeholder="Tìm kiếm tiêu đề, nội dung, từ khóa hoặc #tag..."
+                class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white transition-all"
+              />
+            </div>
+
+            <!-- Filter by Lesson -->
+            <select
+              id="note-filter-lesson"
+              onchange="renderNotesList()"
+              class="px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option value="all">Tất cả 8 Bài học</option>
+              <option value="1">Bài 1: CMCN 4.0 & CĐS</option>
+              <option value="2">Bài 2: Phần cứng & Máy tính</option>
+              <option value="3">Bài 3: Hệ điều hành (OS)</option>
+              <option value="4">Bài 4: Phần mềm & Cloud</option>
+              <option value="5">Bài 5: Mạng, Internet & IoT</option>
+              <option value="6">Bài 6: Tư duy LT & Automation</option>
+              <option value="7">Bài 7: AI, Data & Prompting</option>
+              <option value="8">Bài 8: An toàn TT & Đạo đức số</option>
+            </select>
+
+            <!-- Filter by Study Day -->
+            <select
+              id="note-filter-day"
+              onchange="renderNotesList()"
+              class="px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500"
+            >
+              <option value="all">Tất cả Ngày học (6 ngày)</option>
+              <option value="Ngày 1">Ngày 1</option>
+              <option value="Ngày 2">Ngày 2</option>
+              <option value="Ngày 3">Ngày 3</option>
+              <option value="Ngày 4">Ngày 4</option>
+              <option value="Ngày 5">Ngày 5</option>
+              <option value="Ngày 6">Ngày 6</option>
+            </select>
+          </div>
+
+          <!-- AI Assistant Quick Tools -->
+          <div class="flex items-center gap-2">
+            <button
+              onclick="generateGlobalStudyQuiz()"
+              class="px-4 py-2.5 rounded-xl bg-blue-900 hover:bg-blue-800 text-white text-xs font-semibold flex items-center gap-2 transition-colors shadow-sm"
+            >
+              <i class="fa-solid fa-graduation-cap text-orange-400"></i>
+              <span>AI Tạo Đề Ôn Tập Tổng Hợp</span>
+            </button>
+            <button
+              onclick="resetSampleNotes()"
+              title="Khôi phục 10 ghi chú mẫu ban đầu"
+              class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold transition-colors"
+            >
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Two-Column Workspace: Notes Grid + Live AI Assistant Panel -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Left 2 Columns: Notes Cards -->
+          <div class="lg:col-span-2 space-y-4">
+            <div
+              id="notes-grid-container"
+              class="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+              <!-- Rendered dynamically via JS -->
+            </div>
+          </div>
+
+          <!-- Right Column: Sticky AI Copilot & Flashcard Studio -->
+          <div class="lg:col-span-1">
+            <div
+              class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sticky top-20 space-y-4"
+            >
+              <div
+                class="flex items-center justify-between border-b border-slate-100 pb-3"
+              >
+                <div class="flex items-center gap-2.5">
+                  <div
+                    class="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white"
+                  >
+                    <i class="fa-solid fa-robot text-sm"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-slate-900 text-sm">
+                      Trợ Lý AI Phân Tích Ghi Chú
+                    </h3>
+                    <p class="text-[11px] text-slate-500">
+                      Tích hợp Google AI Studio Logic (Y6)
+                    </p>
+                  </div>
+                </div>
+                <span
+                  class="px-2 py-0.5 text-[10px] font-bold bg-indigo-50 text-indigo-600 rounded-md border border-indigo-100"
+                  >AI v4.0</span
+                >
+              </div>
+
+              <div id="ai-assistant-output" class="space-y-3 text-sm">
+                <div
+                  class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-600 text-xs leading-relaxed"
+                >
+                  <p class="font-semibold text-slate-800 mb-1.5">
+                    <i class="fa-solid fa-lightbulb text-amber-500 mr-1.5"></i
+                    >Hướng dẫn sử dụng AI Copilot:
+                  </p>
+                  <ul class="space-y-1.5 list-disc pl-4">
+                    <li>
+                      Nhấn nút <strong>"AI Tóm tắt"</strong> trên bất kỳ thẻ ghi
+                      chú nào để trích xuất ý chính cô đọng.
+                    </li>
+                    <li>
+                      Nhấn <strong>"AI Auto-Tag"</strong> để hệ thống tự động
+                      phân tích ngữ nghĩa và gắn nhãn từ khóa.
+                    </li>
+                    <li>
+                      Nhấn <strong>"AI Tạo Flashcard"</strong> để sinh câu hỏi
+                      trắc nghiệm kiểm tra kiến thức ngay lập tức.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================== -->
+      <!-- MODULE 3: PHÁC THẢO KIẾN TRÚC & QUY TRÌNH VẬN HÀNH (YÊU CẦU Y4)       -->
+      <!-- ===================================================================== -->
+      <section id="module-wireframe" class="hidden fade-in space-y-6">
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <div
+            class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5"
+          >
+            <div>
+              <span
+                class="px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold border border-blue-200"
+                >Tài liệu Thiết kế Hệ thống (Yêu cầu Y4)</span
+              >
+              <h2 class="text-2xl font-extrabold text-slate-900 mt-2">
+                Bản Vẽ Phác Thảo Kiến Trúc, Giao Diện & Luồng Vận Hành
+              </h2>
+              <p class="text-sm text-slate-500 mt-1">
+                Tài liệu trực quan hóa phục vụ báo cáo quá trình thực hiện và
+                bảo vệ Assignment môn CNTT 4.0.
+              </p>
+            </div>
+            <button
+              onclick="copySystemArchitectureSummary()"
+              class="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-2 self-start"
+            >
+              <i class="fa-regular fa-copy"></i>
+              <span>Sao chép Mô tả Báo cáo</span>
+            </button>
+          </div>
+
+          <!-- 3 Core Pillars of Y4 -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+            <!-- Y4.a: Giao diện chính -->
+            <div
+              class="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 flex flex-col justify-between"
+            >
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span
+                    class="px-2.5 py-1 rounded-lg bg-orange-500 text-white text-xs font-bold"
+                    >Y4.a</span
+                  >
+                  <span class="text-xs font-semibold text-slate-400"
+                    >Main Dashboard UI</span
+                  >
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">
+                  1. Phác thảo Giao diện chính
+                </h3>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                  Thiết kế theo mô hình
+                  <strong>Single-Page Application (SPA)</strong> chuẩn EdTech
+                  với bố cục 3 vùng trực quan:
+                </p>
+                <!-- Wireframe Visual Mockup -->
+                <div
+                  class="bg-white p-3 rounded-xl border border-slate-300 shadow-inner space-y-2 mb-4"
+                >
+                  <div
+                    class="h-5 bg-slate-900 rounded flex items-center justify-between px-2"
+                  >
+                    <div class="w-12 h-2 bg-orange-500 rounded"></div>
+                    <div class="flex gap-1">
+                      <div class="w-8 h-2 bg-slate-600 rounded"></div>
+                      <div class="w-8 h-2 bg-slate-600 rounded"></div>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-3 gap-2 h-24">
+                    <div
+                      class="col-span-1 bg-slate-100 rounded border border-slate-200 p-1.5 space-y-1"
+                    >
+                      <div class="h-2 bg-blue-300 rounded w-3/4"></div>
+                      <div class="h-1.5 bg-slate-300 rounded w-full"></div>
+                      <div class="h-1.5 bg-slate-300 rounded w-5/6"></div>
+                      <div class="h-1.5 bg-slate-300 rounded w-full"></div>
+                    </div>
+                    <div
+                      class="col-span-2 bg-orange-50/50 rounded border border-orange-200 p-1.5 space-y-1.5"
+                    >
+                      <div class="h-3 bg-orange-300 rounded w-1/2"></div>
+                      <div class="grid grid-cols-2 gap-1">
+                        <div
+                          class="h-8 bg-white rounded border border-slate-200"
+                        ></div>
+                        <div
+                          class="h-8 bg-white rounded border border-slate-200"
+                        ></div>
+                      </div>
+                      <div class="h-4 bg-blue-100 rounded w-full"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <ul
+                class="text-xs text-slate-600 space-y-1.5 border-t border-slate-200 pt-3"
+              >
+                <li>
+                  <i class="fa-solid fa-check text-emerald-500 mr-1.5"></i
+                  ><strong>Header:</strong> Điều hướng 3 phân hệ & Thanh tiến
+                  độ.
+                </li>
+                <li>
+                  <i class="fa-solid fa-check text-emerald-500 mr-1.5"></i
+                  ><strong>Sidebar:</strong> Cây thư mục 8 chuyên đề học tập.
+                </li>
+                <li>
+                  <i class="fa-solid fa-check text-emerald-500 mr-1.5"></i
+                  ><strong>Workspace:</strong> Nội dung đa phương tiện & Ghi
+                  chú.
+                </li>
+              </ul>
+            </div>
+
+            <!-- Y4.b: Giao diện các chức năng chính -->
+            <div
+              class="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 flex flex-col justify-between"
+            >
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span
+                    class="px-2.5 py-1 rounded-lg bg-blue-600 text-white text-xs font-bold"
+                    >Y4.b</span
+                  >
+                  <span class="text-xs font-semibold text-slate-400"
+                    >Core Functional Modules</span
+                  >
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">
+                  2. Giao diện Chức năng chính
+                </h3>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                  Phân tách thành 4 cụm chức năng tương tác khép kín phục vụ học
+                  tập và quản lý tri thức:
+                </p>
+                <div class="space-y-2 mb-4">
+                  <div
+                    class="p-2.5 bg-white rounded-xl border border-slate-200 flex items-center gap-3"
+                  >
+                    <div
+                      class="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center shrink-0"
+                    >
+                      <i class="fa-solid fa-layer-group"></i>
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-slate-800">
+                        Trình đọc Bài giảng & Thư viện số
+                      </div>
+                      <div class="text-[11px] text-slate-500">
+                        Infographic, Bảng so sánh, Tài liệu PDF, Link ngoài.
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="p-2.5 bg-white rounded-xl border border-slate-200 flex items-center gap-3"
+                  >
+                    <div
+                      class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"
+                    >
+                      <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-slate-800">
+                        Trình soạn thảo & Lọc Ghi chú (CRUD)
+                      </div>
+                      <div class="text-[11px] text-slate-500">
+                        Gắn nhãn Bài học, Ngày học (6 ngày), Tìm kiếm tức thì.
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="p-2.5 bg-white rounded-xl border border-slate-200 flex items-center gap-3"
+                  >
+                    <div
+                      class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0"
+                    >
+                      <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div>
+                      <div class="text-xs font-bold text-slate-800">
+                        Bảng điều khiển Trợ lý AI Copilot
+                      </div>
+                      <div class="text-[11px] text-slate-500">
+                        Tóm tắt tự động, Auto-Tagging & Sinh Quiz ôn tập.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="text-xs text-slate-600 border-t border-slate-200 pt-3"
+              >
+                <i class="fa-solid fa-database text-blue-500 mr-1.5"></i
+                ><strong>Lưu trữ bền vững:</strong> Tự động đồng bộ dữ liệu qua
+                <code class="bg-slate-200 px-1 rounded">localStorage</code> trên
+                trình duyệt.
+              </div>
+            </div>
+
+            <!-- Y4.c: Cách vận hành các chức năng chính -->
+            <div
+              class="rounded-2xl border border-slate-200 bg-slate-50/70 p-5 flex flex-col justify-between"
+            >
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span
+                    class="px-2.5 py-1 rounded-lg bg-emerald-600 text-white text-xs font-bold"
+                    >Y4.c</span
+                  >
+                  <span class="text-xs font-semibold text-slate-400"
+                    >System Workflow & Logic</span
+                  >
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">
+                  3. Cách vận hành Hệ thống
+                </h3>
+                <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                  Chu trình vận hành khép kín từ tiếp nhận tri thức đến kiểm
+                  chứng bằng AI:
+                </p>
+                <!-- Flowchart Steps -->
+                <div
+                  class="relative pl-6 space-y-3 before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-emerald-300"
+                >
+                  <div
+                    class="relative bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs"
+                  >
+                    <span
+                      class="absolute -left-6 top-2.5 w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center"
+                      >1</span
+                    >
+                    <div class="text-xs font-bold text-slate-800">
+                      Input (Khai thác Học liệu)
+                    </div>
+                    <div class="text-[11px] text-slate-500">
+                      Sinh viên học 8 slide, mở website tham khảo mở rộng và
+                      đánh dấu hoàn thành.
+                    </div>
+                  </div>
+                  <div
+                    class="relative bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs"
+                  >
+                    <span
+                      class="absolute -left-6 top-2.5 w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center"
+                      >2</span
+                    >
+                    <div class="text-xs font-bold text-slate-800">
+                      Capture (Ghi chép Đa chiều)
+                    </div>
+                    <div class="text-[11px] text-slate-500">
+                      Ghi chú nhanh ngay dưới bài học hoặc trong SmartNote, phân
+                      loại theo Ngày học.
+                    </div>
+                  </div>
+                  <div
+                    class="relative bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs"
+                  >
+                    <span
+                      class="absolute -left-6 top-2.5 w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center"
+                      >3</span
+                    >
+                    <div class="text-xs font-bold text-slate-800">
+                      AI Processing (Xử lý Thông minh)
+                    </div>
+                    <div class="text-[11px] text-slate-500">
+                      Thuật toán NLP phân tích từ khóa, rút trích câu chủ đề,
+                      gắn tag và tạo câu hỏi trắc nghiệm.
+                    </div>
+                  </div>
+                  <div
+                    class="relative bg-white p-2.5 rounded-xl border border-slate-200 shadow-xs"
+                  >
+                    <span
+                      class="absolute -left-6 top-2.5 w-5 h-5 rounded-full bg-emerald-600 text-white text-[10px] font-bold flex items-center justify-center"
+                      >4</span
+                    >
+                    <div class="text-xs font-bold text-slate-800">
+                      Output (Xuất Báo cáo & Bảo vệ)
+                    </div>
+                    <div class="text-[11px] text-slate-500">
+                      Tổng hợp thống kê thành file báo cáo chuẩn nộp bài
+                      Assignment.
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="text-xs text-slate-600 border-t border-slate-200 pt-3 mt-3"
+              >
+                <i class="fa-solid fa-shield-halved text-emerald-600 mr-1.5"></i
+                ><strong>Bảo mật & An toàn:</strong> Dữ liệu lưu cục bộ, không
+                phụ thuộc server bên thứ ba.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- MODAL: THÊM / CHỈNH SỬA GHI CHÚ -->
+    <div
+      id="note-modal"
+      class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden fade-in"
+      >
+        <div
+          class="bg-slate-900 px-6 py-4 text-white flex items-center justify-between"
+        >
+          <h3
+            id="modal-title"
+            class="font-bold text-base flex items-center gap-2"
+          >
+            <i class="fa-solid fa-pen-nib text-orange-400"></i>
+            <span>Thêm Ghi Chú Học Tập Mới</span>
+          </h3>
+          <button
+            onclick="closeNoteModal()"
+            class="text-slate-400 hover:text-white p-1"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+        <form
+          id="note-form"
+          onsubmit="saveNoteFromModal(event)"
+          class="p-6 space-y-4"
+        >
+          <input type="hidden" id="edit-note-id" />
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1"
+              >Tiêu đề ghi chú *</label
+            >
+            <input
+              type="text"
+              id="note-title-input"
+              required
+              placeholder="VD: Phân biệt Tin học hóa và Chuyển đổi số..."
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label
+                class="block text-xs font-bold text-slate-700 uppercase mb-1"
+                >Chuyên đề / Bài học *</label
+              >
+              <select
+                id="note-lesson-input"
+                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option value="1">Bài 1: CMCN 4.0 & CĐS</option>
+                <option value="2">Bài 2: Phần cứng & Máy tính</option>
+                <option value="3">Bài 3: Hệ điều hành (OS)</option>
+                <option value="4">Bài 4: Phần mềm & Cloud</option>
+                <option value="5">Bài 5: Mạng, Internet & IoT</option>
+                <option value="6">Bài 6: Tư duy LT & Automation</option>
+                <option value="7">Bài 7: AI, Data & Prompting</option>
+                <option value="8">Bài 8: An toàn TT & Đạo đức số</option>
+              </select>
+            </div>
+            <div>
+              <label
+                class="block text-xs font-bold text-slate-700 uppercase mb-1"
+                >Ngày học (Tiến độ Y5b) *</label
+              >
+              <select
+                id="note-day-input"
+                class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+              >
+                <option value="Ngày 1">Ngày 1 (Khởi động & Tổng quan)</option>
+                <option value="Ngày 2">Ngày 2 (Phần cứng & OS)</option>
+                <option value="Ngày 3">Ngày 3 (Cloud & Mạng IoT)</option>
+                <option value="Ngày 4">Ngày 4 (Tư duy LT & Vibe Code)</option>
+                <option value="Ngày 5">Ngày 5 (AI & Prompt Engineering)</option>
+                <option value="Ngày 6">Ngày 6 (Bảo mật & Luật số)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label class="block text-xs font-bold text-slate-700 uppercase"
+                >Nội dung chi tiết *</label
+              >
+              <button
+                type="button"
+                onclick="autoSuggestTagsInModal()"
+                class="text-[11px] font-semibold text-blue-600 hover:text-blue-800 flex items-center gap-1"
+              >
+                <i class="fa-solid fa-wand-magic-sparkles"></i> AI Gợi ý thẻ tag
+              </button>
+            </div>
+            <textarea
+              id="note-content-input"
+              rows="4"
+              required
+              placeholder="Ghi chép lại kiến thức cốt lõi, ví dụ thực tế hoặc câu hỏi cần giải đáp..."
+              class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            ></textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase mb-1"
+              >Thẻ từ khóa (Tags - cách nhau bởi dấu phẩy)</label
+            >
+            <input
+              type="text"
+              id="note-tags-input"
+              placeholder="VD: CMCN4.0, ChuyenDoiSo, AI, FPTPoly"
+              class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            />
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <input
+              type="checkbox"
+              id="note-important-input"
+              class="w-4 h-4 text-orange-500 rounded border-slate-300 focus:ring-orange-500"
+            />
+            <label
+              for="note-important-input"
+              class="text-xs font-medium text-slate-700"
+              >Đánh dấu là ghi chú trọng tâm ôn thi / bảo vệ</label
+            >
+          </div>
+          <div class="flex justify-end gap-2 pt-3 border-t border-slate-100">
+            <button
+              type="button"
+              onclick="closeNoteModal()"
+              class="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100"
+            >
+              Hủy bỏ
+            </button>
+            <button
+              type="submit"
+              class="px-5 py-2 rounded-xl text-sm font-bold bg-orange-500 hover:bg-orange-600 text-white shadow-md"
+            >
+              Lưu Ghi Chú
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6">
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500"
+      >
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-slate-800">FPT Polytechnic</span>
+          <span>•</span>
+          <span>Module: Công nghệ thông tin 4.0 (CNTT 4.0)</span>
+        </div>
+        <div>
+          Sản phẩm thực hành Assignment (Phần 1: Thư viện số 8 chuyên đề & Phần
+          2: SmartNote AI)
+        </div>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+      // =========================================================================
+      // 1. DỮ LIỆU ĐẦY ĐỦ 8 BÀI HỌC THEO SLIDE & YÊU CẦU ASSIGNMENT (Y1, Y2)
+      // =========================================================================
+      const lessonsData = [
+        {
+          id: 1,
+          shortTitle: "Bài 1: CMCN 4.0 & CĐS",
+          title: "Tổng quan về CMCN 4.0, CNTT 4.0 & Chuyển đổi số (CĐS)",
+          subtitle:
+            "Lịch sử 4 cuộc cách mạng công nghiệp, 4 trụ cột công nghệ, Chiến lược CĐS Việt Nam & Tiêu chuẩn UNIDO.",
+          duration: "45 phút",
+          icon: "fa-globe",
+          color: "orange",
+          objectives: [
+            "Hiểu khái niệm và lịch sử tiến hóa qua 4 cuộc Cách mạng công nghiệp (1.0 đến 4.0).",
+            "Nhận diện 4 công nghệ cốt lõi: AI, IoT, Big Data và Cloud Computing.",
+            "Phân biệt rạch ròi giữa Tin học hóa (Digitization) và Chuyển đổi số (Digital Transformation).",
+            "Nắm bắt 3 trụ cột CĐS tại Việt Nam (Chính phủ số, Kinh tế số, Xã hội số) và 17 mục tiêu SDGs.",
+          ],
+          sections: [
+            {
+              heading: "1. Tiến trình 4 cuộc Cách mạng Công nghiệp (CMCN)",
+              type: "grid-4",
+              items: [
+                {
+                  badge: "CMCN 1.0 (1760 - 1840)",
+                  title: "Cơ khí hóa & Máy hơi nước",
+                  desc: "Thay thế sức lao động thủ công bằng máy hơi nước, phát triển ngành dệt và hình thành nhà máy quy mô lớn.",
+                },
+                {
+                  badge: "CMCN 2.0 (1870 - 1920s)",
+                  title: "Điện năng & Sản xuất hàng loạt",
+                  desc: "Sử dụng điện năng, phát minh dây chuyền lắp ráp ô tô Henry Ford, đèn điện, điện thoại và công nghiệp thép.",
+                },
+                {
+                  badge: "CMCN 3.0 (1970s - nay)",
+                  title: "Máy tính & Tự động hóa",
+                  desc: "Bùng nổ máy tính cá nhân (PC), chất bán dẫn, vi mạch điện tử và mạng Internet sơ khai.",
+                },
+                {
+                  badge: "CMCN 4.0 (2010 - nay)",
+                  title: "Kết nối số & Trí tuệ nhân tạo",
+                  desc: "Hợp nhất thế giới vật lý và thế giới số (Cyber-Physical Systems). Máy móc tự học, dữ liệu là tài nguyên cốt lõi.",
+                },
+              ],
+            },
+            {
+              heading: "2. Bốn trụ cột công nghệ cốt lõi của CNTT 4.0",
+              type: "pillars",
+              items: [
+                {
+                  icon: "fa-brain",
+                  name: "Trí tuệ nhân tạo (AI)",
+                  detail:
+                    "Giúp máy tính học từ dữ liệu, nhận diện hình ảnh/giọng nói và ra quyết định (VD: ChatGPT, Xe tự lái).",
+                },
+                {
+                  icon: "fa-network-wired",
+                  name: "Internet vạn vật (IoT)",
+                  detail:
+                    "Mạng lưới cảm biến vật lý kết nối Internet, thu thập và trao đổi dữ liệu thời gian thực (VD: Smart Home).",
+                },
+                {
+                  icon: "fa-database",
+                  name: "Dữ liệu lớn (Big Data)",
+                  detail:
+                    "Khối lượng dữ liệu khổng lồ đặc trưng bởi 3V (Volume, Velocity, Variety) làm nguyên liệu cho AI.",
+                },
+                {
+                  icon: "fa-cloud",
+                  name: "Điện toán đám mây (Cloud)",
+                  detail:
+                    "Lưu trữ và xử lý dữ liệu linh hoạt trên máy chủ Internet mọi lúc mọi nơi (AWS, Azure, Google Cloud).",
+                },
+              ],
+            },
+            {
+              heading: "3. Phân biệt Tin học hóa vs. Chuyển đổi số (CĐS)",
+              type: "comparison",
+              leftTitle: "Tin học hóa (Digitization)",
+              leftPoints: [
+                "Bản chất: Chỉ là số hóa dữ liệu từ giấy tờ lên máy tính.",
+                "Đặc điểm: Không làm thay đổi quy trình hay mô hình hoạt động cũ.",
+                "Ví dụ: Đưa từ điển bách khoa toàn thư lên đĩa CD hoặc scan file PDF.",
+              ],
+              rightTitle: "Chuyển đổi số (Digital Transformation)",
+              rightPoints: [
+                "Bản chất: Thay đổi toàn diện quy trình, mô hình và văn hóa vận hành.",
+                "Đặc điểm: Tạo ra phương thức hoạt động mới và giá trị mới vượt trội.",
+                "Ví dụ: Giải quyết thủ tục hành chính trực tuyến qua Cổng Dịch vụ công Quốc gia.",
+              ],
+            },
+            {
+              heading:
+                "4. Chuyển đổi số tại Việt Nam (Tầm nhìn 2025 - 2030) & Chuẩn UNIDO",
+              type: "text-cards",
+              cards: [
+                {
+                  title: "3 Trụ cột CĐS Quốc gia",
+                  content:
+                    "Chính phủ số (dịch vụ công trực tuyến mức độ 4), Kinh tế số (mục tiêu chiếm 20-30% GDP vào 2030, thúc đẩy doanh nghiệp Make in Viet Nam) và Xã hội số (Kỹ năng số, Danh tính số, Văn hóa số).",
+                },
+                {
+                  title: "Lộ trình 3 bước & Thách thức",
+                  content:
+                    "Bước 1: Nhận thức -> Bước 2: Chiến lược -> Bước 3: Công nghệ & Nhân lực. Thách thức lớn nhất không phải công nghệ mà là thay đổi thói quen và tư duy người đứng đầu.",
+                },
+                {
+                  title: "Định hướng Liên Hợp Quốc (UNIDO)",
+                  content:
+                    "CĐS không chỉ là mua công nghệ mà phải phục vụ 17 Mục tiêu Phát triển Bền vững (SDGs): Con người (People), Hành tinh (Planet) và Thịnh vượng (Prosperity).",
+                },
+              ],
+            },
+          ],
+          keyTakeaways:
+            "Sinh viên CNTT 4.0 cần làm chủ tư duy logic, kỹ năng sử dụng công nghệ số, ngoại ngữ và tinh thần học tập suốt đời để thích ứng với thị trường lao động toàn cầu.",
+          digitalLibrary: {
+            slideFile:
+              "Slide 1 - Tổng quan về CMCN 4.0, CNTT 4.0, CĐS.pptx (45 trang)",
+            mediaDesc:
+              "Infographic Lịch sử 4 cuộc CMCN & Mô hình Kiến trúc CĐS Việt Nam",
+            externalLink: {
+              title:
+                "Cổng Thông tin Chuyển đổi số Quốc gia - Bộ Thông tin & Truyền thông",
+              url: "https://dx.gov.vn/",
+              domain: "dx.gov.vn",
+              desc: "Trang thông tin chính thức của Chính phủ Việt Nam về chương trình Chuyển đổi số quốc gia, Chính phủ số, Kinh tế số và Xã hội số.",
+            },
+          },
+        },
+        {
+          id: 2,
+          shortTitle: "Bài 2: Kiến trúc & Phần cứng",
+          title: "Kiến trúc và Phần cứng máy tính (Computer & Hardware)",
+          subtitle:
+            "Lịch sử 5 thế hệ máy tính, mô hình IPO, CPU, RAM/ROM, ổ cứng SSD NVMe và tương lai Máy tính lượng tử.",
+          duration: "50 phút",
+          icon: "fa-microchip",
+          color: "blue",
+          objectives: [
+            "Trình bày được lịch sử 5 thế hệ phát triển của máy tính điện tử.",
+            "Phân tích mô hình hoạt động cốt lõi: Input → Process → Output → Storage.",
+            "Phân biệt thông số kỹ thuật của CPU, RAM (DDR4/DDR5), ROM và thiết bị lưu trữ (HDD vs SSD).",
+            "Hiểu xu hướng kiến trúc chuyên biệt (DSA/TPU) và nguyên lý Qubit của Máy tính lượng tử.",
+          ],
+          sections: [
+            {
+              heading: "1. Hành trình 5 thế hệ máy tính (1945 - Tương lai)",
+              type: "grid-4",
+              items: [
+                {
+                  badge: "Thế hệ 1 & 2 (1945 - 1965)",
+                  title: "Đèn chân không & Transistor",
+                  desc: "Thế hệ 1 dùng bóng đèn chân không khổng lồ, tốn điện. Thế hệ 2 chuyển sang Transistor nhỏ gọn, tin cậy hơn.",
+                },
+                {
+                  badge: "Thế hệ 3 (1965 - 1980)",
+                  title: "Mạch tích hợp (IC)",
+                  desc: "Tích hợp hàng ngàn linh kiện lên chip bán dẫn, xuất hiện hệ điều hành, bàn phím và màn hình giao tiếp.",
+                },
+                {
+                  badge: "Thế hệ 4 (1981 - nay)",
+                  title: "Vi xử lý (Microprocessor)",
+                  desc: "Định luật Moore (số bóng bán dẫn nhân đôi mỗi 2 năm). Bùng nổ PC, Laptop, Smartphone mạnh mẽ.",
+                },
+                {
+                  badge: "Thế hệ 5 (Hiện tại - Tương lai)",
+                  title: "AI & Kiến trúc chuyên biệt",
+                  desc: "Xử lý song song đa nhân, chip chuyên biệt AI (TPU/DSA) và đột phá Máy tính lượng tử (Quantum Computing).",
+                },
+              ],
+            },
+            {
+              heading: "2. Mô hình xử lý thông tin & Linh kiện cốt lõi",
+              type: "pillars",
+              items: [
+                {
+                  icon: "fa-microchip",
+                  name: "CPU (Bộ não máy tính)",
+                  detail:
+                    "Đo bằng Xung nhịp (GHz), Số nhân (Cores: 4-24+), và bộ nhớ đệm Cache siêu tốc (8MB-32MB). Hãng lớn: Intel Core & AMD Ryzen.",
+                },
+                {
+                  icon: "fa-memory",
+                  name: "RAM (Bộ nhớ tạm thời)",
+                  detail:
+                    "Lưu chương trình đang chạy, mất dữ liệu khi tắt điện. Chuẩn DDR4/DDR5; sinh viên CNTT nên chọn tối thiểu 16GB RAM.",
+                },
+                {
+                  icon: "fa-compact-disc",
+                  name: "ROM (Bộ nhớ chỉ đọc)",
+                  detail:
+                    "Lưu chương trình khởi động hệ thống (BIOS/UEFI) và Firmware, không bị mất dữ liệu khi ngắt nguồn.",
+                },
+                {
+                  icon: "fa-hard-drive",
+                  name: "Lưu trữ (HDD vs SSD NVMe)",
+                  detail:
+                    "SSD NVMe dùng chip nhớ Flash cho tốc độ đọc/ghi gấp 5-10 lần ổ đĩa cơ HDD truyền thống.",
+                },
+              ],
+            },
+            {
+              heading:
+                "3. So sánh Kiến trúc Cổ điển vs. Máy tính Lượng tử (Quantum)",
+              type: "comparison",
+              leftTitle: "Máy tính Cổ điển (Classical)",
+              leftPoints: [
+                "Đơn vị cơ bản: Bit (chỉ nhận trạng thái 0 HOẶC 1).",
+                "Phương thức xử lý: Tuần tự từng bước một.",
+                "Môi trường: Hoạt động ổn định ở nhiệt độ phòng.",
+                "Điểm mạnh: Tác vụ văn phòng, web, lập trình thông thường.",
+              ],
+              rightTitle: "Máy tính Lượng tử (Quantum)",
+              rightPoints: [
+                "Đơn vị cơ bản: Qubit (trạng thái chồng chập vừa 0 vừa 1).",
+                "Phương thức xử lý: Tính song song lượng tử đồng thời.",
+                "Môi trường: Cần làm lạnh cực sâu (gần 0 độ tuyệt đối).",
+                "Điểm mạnh: Mô phỏng phân tử, mật mã học, tối ưu siêu phức tạp.",
+              ],
+            },
+            {
+              heading:
+                "4. Kiến trúc Chuyên biệt (DSA) & Tiêu chí chọn Laptop CNTT",
+              type: "text-cards",
+              cards: [
+                {
+                  title: "Sự trỗi dậy của DSA & Google TPU",
+                  content:
+                    "Khi định luật Moore chạm giới hạn vật lý, phần cứng chuyển sang Kiến trúc chuyên biệt (DSA). Ví dụ Google TPU tối ưu hóa phép nhân ma trận cho AI, đạt hiệu suất/Watt cao gấp hàng chục lần CPU/GPU.",
+                },
+                {
+                  title: "Cấu hình Laptop chuẩn cho Sinh viên IT",
+                  content:
+                    "CPU Intel Core i5 / AMD Ryzen 5 thế hệ mới trở lên, RAM 16GB (hỗ trợ nâng cấp), ổ cứng SSD NVMe 512GB, màn hình Full HD chống chói và bàn phím hành trình tốt.",
+                },
+                {
+                  title: "Thiết bị Nhập / Xuất (I/O)",
+                  content:
+                    "Input: Bàn phím, chuột, webcam, micro, máy quét. Output: Màn hình (LCD/OLED, 2K/4K), máy in laser/phun, loa, máy chiếu.",
+                },
+              ],
+            },
+          ],
+          keyTakeaways:
+            "Hiểu rõ sự phối hợp giữa CPU, RAM, SSD và I/O giúp sinh viên tối ưu hiệu năng hệ thống và lựa chọn đúng thiết bị phục vụ lập trình, học tập.",
+          digitalLibrary: {
+            slideFile: "Slide 2 - Computer, Hardware.pptx (44 trang)",
+            mediaDesc:
+              "Sơ đồ khối Input-Process-Output-Storage & So sánh CPU/GPU/TPU",
+            externalLink: {
+              title: "HowStuffWorks - How Computer Hardware Works",
+              url: "https://computer.howstuffworks.com/inside-computer.htm",
+              domain: "computer.howstuffworks.com",
+              desc: "Tài liệu trực quan giải thích chi tiết cấu tạo bên trong máy tính, nguyên lý hoạt động của CPU, RAM, bo mạch chủ và bộ nhớ.",
+            },
+          },
+        },
+        {
+          id: 3,
+          shortTitle: "Bài 3: Hệ điều hành (OS)",
+          title: "Tổng quan về Hệ điều hành & Môi trường số Đa nền tảng",
+          subtitle:
+            "Vai trò cầu nối của OS, kiến trúc hạt nhân (Kernel), quản lý tiến trình, bảo mật ACL và hệ điều hành tích hợp AI.",
+          duration: "45 phút",
+          icon: "fa-desktop",
+          color: "indigo",
+          objectives: [
+            "Định nghĩa chính xác Hệ điều hành (OS) dưới góc nhìn người dùng và góc nhìn hệ thống.",
+            "Hiểu 4 chức năng cốt lõi: Quản lý tiến trình, Quản lý bộ nhớ RAM, Quản lý lưu trữ/I/O và Bảo mật.",
+            "Phân biệt các kiến trúc hạt nhân: Nguyên khối (Monolithic), Phân lớp, Vi hạt nhân (Microkernel) và Mô-đun.",
+            "Nắm vững công nghệ Ảo hóa (Virtual Machine), Container (Docker) và xu hướng Hệ điều hành AI (AI OS).",
+          ],
+          sections: [
+            {
+              heading: "1. Chức năng cốt lõi của Hệ điều hành (System View)",
+              type: "pillars",
+              items: [
+                {
+                  icon: "fa-bars-progress",
+                  name: "Quản lý Tiến trình (Process)",
+                  detail:
+                    "Khởi tạo, lập lịch (Scheduling) phân bổ CPU thời gian thực và chuyển đổi ngữ cảnh mượt mà giữa các ứng dụng.",
+                },
+                {
+                  icon: "fa-border-all",
+                  name: "Quản lý Bộ nhớ RAM",
+                  detail:
+                    "Theo dõi bản đồ RAM trống/bận, cấp phát và giải phóng bộ nhớ, ngăn chặn tình trạng thắt cổ chai (Thrashing).",
+                },
+                {
+                  icon: "fa-folder-tree",
+                  name: "Quản lý Lưu trữ & I/O",
+                  detail:
+                    "Trừu tượng hóa ổ cứng thành Hệ thống tệp (File System) và giao tiếp phần cứng qua Trình điều khiển (Drivers).",
+                },
+                {
+                  icon: "fa-shield-halved",
+                  name: "Bảo vệ & Bảo mật",
+                  detail:
+                    "Phân tách quyền Kernel Mode và User Mode, kiểm soát truy cập tệp tin qua danh sách ACL (Read/Write/Execute).",
+                },
+              ],
+            },
+            {
+              heading:
+                "2. So sánh Ảo hóa truyền thống (VM) vs. Containerization (Docker)",
+              type: "comparison",
+              leftTitle: "Máy ảo truyền thống (Virtual Machine)",
+              leftPoints: [
+                "Kiến trúc: Chạy trên Hypervisor, mỗi VM phải cài một Guest OS riêng.",
+                "Dung lượng: Rất nặng, thường tính bằng hàng chục Gigabytes (GB).",
+                "Tốc độ khởi động: Chậm, mất vài phút để khởi động toàn bộ OS.",
+                "Ưu điểm: Cách ly phần cứng tuyệt đối, độ bảo mật cao nhất.",
+              ],
+              rightTitle: "Container (Docker)",
+              rightPoints: [
+                "Kiến trúc: Loại bỏ Guest OS, dùng chung nhân (Host OS Kernel).",
+                "Dung lượng: Siêu nhẹ, chỉ tính bằng Megabytes (MB).",
+                "Tốc độ khởi động: Tức thì, chỉ tính bằng giây.",
+                "Ưu điểm: Tính di động cực cao, chạy đồng nhất từ Laptop lên Server.",
+              ],
+            },
+            {
+              heading: "3. Thực hành quản trị & Bảo mật Hệ điều hành hiệu quả",
+              type: "grid-4",
+              items: [
+                {
+                  badge: "Nguyên tắc 1",
+                  title: "Đặc quyền tối thiểu (Least Privilege)",
+                  desc: "Sử dụng tài khoản Standard User cho tác vụ hàng ngày, chỉ dùng quyền Admin khi cài đặt hệ thống.",
+                },
+                {
+                  badge: "Nguyên tắc 2",
+                  title: "Xác thực đa tầng (MFA)",
+                  desc: "Kết hợp Mật khẩu/PIN + Thiết bị 2FA + Sinh trắc học (Windows Hello / Touch ID) để chống chiếm quyền.",
+                },
+                {
+                  badge: "Nguyên tắc 3",
+                  title: "Chiến lược Sao lưu & Snapshot",
+                  desc: "Kết hợp Full Backup và Incremental Backup. Dùng Snapshot để 'du hành thời gian' khôi phục hệ thống khi lỗi.",
+                },
+                {
+                  badge: "Nguyên tắc 4",
+                  title: "Giám sát hiệu suất (Task Manager)",
+                  desc: "Theo dõi 4 trụ cột CPU, RAM, Disk, Network theo thời gian thực để phát hiện tiến trình ngốn tài nguyên.",
+                },
+              ],
+            },
+            {
+              heading:
+                "4. Môi trường số Đa nền tảng & Hệ điều hành tích hợp AI",
+              type: "text-cards",
+              cards: [
+                {
+                  title: "Hệ sinh thái hợp nhất (Unified Ecosystem)",
+                  content:
+                    "Dữ liệu được giải phóng khỏi phần cứng vật lý nhờ đồng bộ đám mây (Apple iCloud, Microsoft 365), chuyển đổi mượt mà giữa Desktop và Tablet/Mobile.",
+                },
+                {
+                  title: "Hệ điều hành Thông minh (AI-Integrated OS)",
+                  content:
+                    "Chuyển từ thực thi lệnh thụ động sang chủ động dự đoán hành vi (SuperFetch chuẩn bị sẵn RAM/CPU), tối ưu năng lượng và tích hợp trợ lý giọng nói/thị giác AR ngay trong lõi.",
+                },
+              ],
+            },
+          ],
+          keyTakeaways:
+            "Hệ điều hành là nhạc trưởng điều phối toàn bộ phần cứng và phần mềm. Làm chủ Windows Task Manager, phân quyền ACL và Docker là kỹ năng thiết yếu của sinh viên IT.",
+          digitalLibrary: {
+            slideFile: "Slide 3 - Operating System.pptx (44 trang)",
+            mediaDesc:
+              "Sơ đồ Kiến trúc Hạt nhân OS, Danh sách ACL & So sánh VM vs Container",
+            externalLink: {
+              title:
+                "GeeksforGeeks - Operating Systems Tutorials & Architecture",
+              url: "https://www.geeksforgeeks.org/operating-systems/",
+              domain: "geeksforgeeks.org",
+              desc: "Kho kiến thức chuẩn khoa học máy tính về nguyên lý Hệ điều hành, quản lý tiến trình, bộ nhớ ảo và cấu trúc hạt nhân.",
+            },
+          },
+        },
+        {
+          id: 4,
+          shortTitle: "Bài 4: Phần mềm & Cloud",
+          title: "Tổng quan về Phần mềm, Điện toán đám mây & Nền tảng",
+          subtitle:
+            "Tiêu chuẩn phần mềm IEEE, Bản quyền & Mã nguồn mở, Chuẩn Cloud NIST và 3 mô hình dịch vụ IaaS - PaaS - SaaS.",
+          duration: "45 phút",
+          icon: "fa-cloud",
+          color: "sky",
+          objectives: [
+            "Hiểu định nghĩa phần mềm theo chuẩn IEEE (Mã nguồn, Quy trình, Tài liệu, Dữ liệu).",
+            "Phân biệt phần mềm hệ thống, phần mềm ứng dụng, phần mềm bản quyền và mã nguồn mở (Open Source).",
+            "Nắm vững 5 đặc trưng cốt lõi của Điện toán đám mây theo chuẩn NIST.",
+            "Phân biệt chính xác 3 mô hình dịch vụ đám mây (IaaS, PaaS, SaaS) và 4 mô hình triển khai.",
+          ],
+          sections: [
+            {
+              heading: "1. Phân loại Phần mềm & Bản quyền số",
+              type: "grid-4",
+              items: [
+                {
+                  badge: "Nhóm 1",
+                  title: "Phần mềm Hệ thống",
+                  desc: "Làm nền móng quản lý tài nguyên phần cứng (Windows, macOS, Linux, Firmware nhúng trong ô tô/thiết bị).",
+                },
+                {
+                  badge: "Nhóm 2",
+                  title: "Phần mềm Ứng dụng",
+                  desc: "Phục vụ tác vụ cụ thể: Bộ Office (Word, Excel, PowerPoint), trình duyệt web, công cụ nén (7-Zip) và phần mềm chuyên ngành.",
+                },
+                {
+                  badge: "Nhóm 3",
+                  title: "Mã nguồn mở (Open Source)",
+                  desc: "Cho phép tự do tiếp cận, nghiên cứu, sửa đổi và phân phối lại mã nguồn (VD: Linux, Python, Git, MySQL, WordPress).",
+                },
+                {
+                  badge: "Nhóm 4",
+                  title: "Bản quyền phần mềm",
+                  desc: "Sử dụng hợp pháp giúp cập nhật bảo mật thường xuyên, hỗ trợ kỹ thuật chính hãng và tránh rủi ro mã độc.",
+                },
+              ],
+            },
+            {
+              heading:
+                "2. Ba mô hình dịch vụ Điện toán đám mây (Cloud Service Models)",
+              type: "pillars",
+              items: [
+                {
+                  icon: "fa-server",
+                  name: "IaaS (Infrastructure as a Service)",
+                  detail:
+                    "Thuê hạ tầng máy chủ ảo, lưu trữ, mạng. Người dùng tự cài OS và bảo mật (VD: Amazon EC2, Google Compute Engine).",
+                },
+                {
+                  icon: "fa-code",
+                  name: "PaaS (Platform as a Service)",
+                  detail:
+                    "Trái tim của lập trình viên: cung cấp sẵn môi trường runtime, database để chỉ việc đưa code lên chạy (VD: Heroku, App Engine).",
+                },
+                {
+                  icon: "fa-window-maximize",
+                  name: "SaaS (Software as a Service)",
+                  detail:
+                    "Phần mềm hoàn chỉnh chạy trực tiếp trên trình duyệt, không cần cài đặt (VD: Google Workspace, Microsoft 365, Canva).",
+                },
+                {
+                  icon: "fa-check-double",
+                  name: "5 Đặc trưng chuẩn NIST",
+                  detail:
+                    "Tự phục vụ theo nhu cầu, Truy cập mạng rộng rãi, Dùng chung tài nguyên, Co giãn nhanh và Đo lường dịch vụ.",
+                },
+              ],
+            },
+            {
+              heading: "3. Các mô hình triển khai Đám mây (Deployment Models)",
+              type: "comparison",
+              leftTitle: "Public Cloud & Community Cloud",
+              leftPoints: [
+                "Public Cloud: Hạ tầng thuộc bên thứ 3 (AWS, Azure, GCP), chia sẻ đa người thuê, chi phí tối ưu, triển khai nhanh.",
+                "Community Cloud: Dùng chung hạ tầng giữa các tổ chức cùng ngành (y tế, giáo dục, ngân hàng) có chung chuẩn pháp lý.",
+              ],
+              rightTitle: "Private Cloud & Hybrid Cloud",
+              rightPoints: [
+                "Private Cloud: Hạ tầng dành riêng cho 1 tổ chức, bảo mật và kiểm soát tối đa sau tường lửa nội bộ.",
+                "Hybrid Cloud & Multi-Cloud: Kết hợp Public + Private để cân bằng bảo mật và khả năng mở rộng, tránh lệ thuộc 1 nhà cung cấp.",
+              ],
+            },
+          ],
+          keyTakeaways:
+            "Sự chuyển dịch từ phần mềm cài đặt cục bộ sang SaaS và nền tảng PaaS giúp lập trình viên và doanh nghiệp biến ý tưởng thành sản phẩm với tốc độ kỷ lục.",
+          digitalLibrary: {
+            slideFile: "Slide 4 - Software, Cloud, Platform.pptx (48 trang)",
+            mediaDesc:
+              "Kim tự tháp IaaS - PaaS - SaaS & Bảng đối chiếu dịch vụ AWS / GCP / Azure",
+            externalLink: {
+              title:
+                "Microsoft Azure - What is Cloud Computing? (IaaS, PaaS, SaaS)",
+              url: "https://azure.microsoft.com/en-us/resources/cloud-computing-dictionary/what-is-cloud-computing",
+              domain: "azure.microsoft.com",
+              desc: "Cẩm nang kiến thức toàn diện từ Microsoft giải thích về Điện toán đám mây, mô hình IaaS, PaaS, SaaS và kiến trúc Hybrid Cloud.",
+            },
+          },
+        },
+        {
+          id: 5,
+          shortTitle: "Bài 5: Mạng, Internet & IoT",
+          title: "Mạng máy tính, Internet & Internet vạn vật (IoT)",
+          subtitle:
+            "Mô hình OSI 7 tầng & TCP/IP, Giao thức TCP vs UDP, Sự cạn kiệt IPv4 & IPv6, Mạng 5G/6G và Hệ sinh thái IoT.",
+          duration: "50 phút",
+          icon: "fa-wifi",
+          color: "teal",
+          objectives: [
+            "Phân biệt mạng cục bộ (LAN), mạng diện rộng (WAN) và mạng toàn cầu Internet.",
+            "Hiểu cấu trúc mô hình phân tầng OSI (7 tầng) và bộ giao thức thực tế TCP/IP.",
+            "So sánh hai giao thức tầng vận chuyển cốt lõi: TCP và UDP.",
+            "Giải thích vai trò của IPv6, mạng di động 5G/6G và kiến trúc kết nối Internet vạn vật (IoT).",
+          ],
+          sections: [
+            {
+              heading: "1. Kiến trúc Mạng máy tính & Mô hình phân lớp",
+              type: "pillars",
+              items: [
+                {
+                  icon: "fa-network-wired",
+                  name: "LAN vs. WAN",
+                  detail:
+                    "LAN kết nối thiết bị phạm vi hẹp (nhà ở, trường học qua Wi-Fi/Switch). WAN liên kết các LAN diện rộng qua Router và ISP.",
+                },
+                {
+                  icon: "fa-layer-group",
+                  name: "Mô hình OSI (7 tầng)",
+                  detail:
+                    "1. Physical -> 2. Data Link -> 3. Network -> 4. Transport -> 5. Session -> 6. Presentation -> 7. Application.",
+                },
+                {
+                  icon: "fa-envelope-open-text",
+                  name: "Đóng gói dữ liệu (Encapsulation)",
+                  detail:
+                    "Dữ liệu đi từ trên xuống được thêm Header: Message -> Segment (TCP) -> Datagram (IP) -> Frame (MAC) -> Bits.",
+                },
+                {
+                  icon: "fa-globe",
+                  name: "Internet & World Wide Web",
+                  detail:
+                    "Internet là hạ tầng liên mạng vật lý (cáp quang biển, router); WWW là dịch vụ siêu văn bản chạy trên Internet.",
+                },
+              ],
+            },
+            {
+              heading: "2. Hai phương thức vận chuyển dữ liệu: TCP vs. UDP",
+              type: "comparison",
+              leftTitle: "TCP (Transmission Control Protocol)",
+              leftPoints: [
+                "Đặc tính: Hướng kết nối, kiểm soát lỗi chặt chẽ, đảm bảo gói tin đến đích đầy đủ và đúng thứ tự.",
+                "Tốc độ: Chậm hơn do phải bắt tay và xác nhận gói tin.",
+                "Ứng dụng: Duyệt Web (HTTP/HTTPS), Email (SMTP), Truyền file (FTP).",
+              ],
+              rightTitle: "UDP (User Datagram Protocol)",
+              rightPoints: [
+                "Đặc tính: Không kết nối, gửi dữ liệu tốc độ tối đa, chấp nhận rủi ro mất gói tin nhỏ.",
+                "Tốc độ: Siêu nhanh, độ trễ cực thấp.",
+                "Ứng dụng: Livestream video, gọi thoại VoIP, Game trực tuyến.",
+              ],
+            },
+            {
+              heading:
+                "3. Tiến hóa Mạng di động (1G - 6G) & Không gian địa chỉ IPv6",
+              type: "grid-4",
+              items: [
+                {
+                  badge: "IPv4 vs IPv6",
+                  title: "Mở khóa không gian vô hạn",
+                  desc: "IPv4 (32-bit, 4.3 tỷ địa chỉ) đã cạn kiệt. IPv6 (128-bit) cung cấp 340 undecillion địa chỉ cho hàng tỷ thiết bị IoT.",
+                },
+                {
+                  badge: "1G đến 4G LTE",
+                  title: "Từ thoại Analog đến All-IP",
+                  desc: "1G (thoại), 2G (SMS), 3G (Mobile Data), 4G LTE (băng thông rộng 100Mbps-1Gbps hỗ trợ HD Streaming).",
+                },
+                {
+                  badge: "Mạng 5G",
+                  title: "Nền tảng mềm & Độ trễ thấp",
+                  desc: "Tốc độ > 1Gbps, kết nối hàng triệu thiết bị IoT/km2, phục vụ xe tự lái và phẫu thuật từ xa.",
+                },
+                {
+                  badge: "Tầm nhìn 6G",
+                  title: "Kết nối không gian 3D",
+                  desc: "Tốc độ chạm ngưỡng 1 Tbps, độ trễ < 1ms, tích hợp Native AI và hòa mạng vệ tinh quỹ đạo thấp.",
+                },
+              ],
+            },
+            {
+              heading: "4. Internet vạn vật (IoT) & Thách thức Bảo mật",
+              type: "text-cards",
+              cards: [
+                {
+                  title: "Vòng lặp tự động Smart Objects",
+                  content:
+                    "1. Cảm nhận (Sensors thu thập nhiệt độ, nhịp tim) -> 2. Xử lý (Phân tích dữ liệu đám mây) -> 3. Phản ứng (Tự động điều chỉnh thiết bị hoặc cảnh báo).",
+                },
+                {
+                  title: "Ứng dụng IoT thực tiễn",
+                  content:
+                    "Thành phố thông minh (điều hướng giao thông, chiếu sáng tự động), Y tế thông minh (giám sát sinh tồn 24/7) và Nhà thông minh (Smart Home).",
+                },
+                {
+                  title: "Bảo mật & Quyền riêng tư IoT",
+                  content:
+                    "Nguy cơ rò rỉ dữ liệu cá nhân và chiếm quyền điều khiển thiết bị vật lý đòi hỏi mã hóa đầu cuối và chuẩn xác thực nghiêm ngặt.",
+                },
+              ],
+            },
+          ],
+          keyTakeaways:
+            "Hiểu rõ cơ chế định tuyến IP, sự khác biệt giữa TCP/UDP và hạ tầng IPv6/5G là chìa khóa để xây dựng các hệ thống kết nối vạn vật an toàn.",
+          digitalLibrary: {
+            slideFile: "Slide 5 - Network, Internet, IOT.pptx (48 trang)",
+            mediaDesc:
+              "Sơ đồ Đối chiếu OSI vs TCP/IP & Lộ trình phát triển mạng di động 1G - 6G",
+            externalLink: {
+              title:
+                "Cloudflare Learning Center - What is the Internet & How Does It Work?",
+              url: "https://www.cloudflare.com/learning/network-layer/how-does-the-internet-work/",
+              domain: "cloudflare.com",
+              desc: "Tài liệu chuyên sâu từ Cloudflare giải thích dễ hiểu về giao thức TCP/IP, định tuyến gói tin, DNS và kiến trúc mạng toàn cầu.",
+            },
+          },
+        },
+        {
+          id: 6,
+          shortTitle: "Bài 6: Tư duy LT & Automation",
+          title: "Tư duy Lập trình & Tự động hóa trong CNTT",
+          subtitle:
+            "4 bước Tư duy máy tính (CT), Tự động hóa doanh nghiệp (BPA, RPA, IaC) và Kỷ nguyên Low-code / No-code / Vibe Coding.",
+          duration: "50 phút",
+          icon: "fa-code-branch",
+          color: "violet",
+          objectives: [
+            "Vận dụng thành thạo 4 trụ cột của Tư duy máy tính (Computational Thinking) để giải quyết vấn đề.",
+            "Hiểu bản chất của Lập trình và sự khác biệt cốt lõi giữa tư duy Con người và Máy tính.",
+            "Phân biệt 3 cấp độ Tự động hóa IT: BPA (Doanh nghiệp), RPA (Giao diện) và IaC (Hạ tầng).",
+            "Nắm bắt xu hướng phát triển phần mềm hiện đại: Low-code, No-code và quy trình Vibe Coding cùng AI.",
+          ],
+          sections: [
+            {
+              heading:
+                "1. Bốn bước cốt lõi của Tư duy Máy tính (Computational Thinking)",
+              type: "grid-4",
+              items: [
+                {
+                  badge: "Bước 1",
+                  title: "Phân rã (Decomposition)",
+                  desc: "Chia nhỏ một hệ thống hoặc bài toán lớn phức tạp thành các mô-đun nhỏ độc lập, dễ quản lý và xử lý riêng lẻ.",
+                },
+                {
+                  badge: "Bước 2",
+                  title: "Trừu tượng hóa (Abstraction)",
+                  desc: "Lược bỏ các chi tiết rườm rà không cần thiết, chỉ giữ lại bản chất và dữ liệu cốt lõi (như sơ đồ tuyến tàu điện ngầm).",
+                },
+                {
+                  badge: "Bước 3",
+                  title: "Nhận diện khuôn mẫu (Pattern)",
+                  desc: "Tìm kiếm sự tương đồng và quy luật lặp lại để khái quát hóa thành một giải pháp chung cho nhiều vấn đề.",
+                },
+                {
+                  badge: "Bước 4",
+                  title: "Thiết kế thuật toán (Algorithm)",
+                  desc: "Xây dựng chuỗi chỉ dẫn từng bước rõ ràng, chính xác tuyệt đối để máy tính thực thi từ đầu đến cuối.",
+                },
+              ],
+            },
+            {
+              heading: "2. Tự động hóa trong CNTT (IT Automation)",
+              type: "pillars",
+              items: [
+                {
+                  icon: "fa-bolt",
+                  name: "Cơ chế Trigger -> Script -> Workflow",
+                  detail:
+                    "Khi có sự kiện kích hoạt (Trigger), bộ điều phối (Workflow Engine) tự động chạy kịch bản lệnh (Scripts) qua API.",
+                },
+                {
+                  icon: "fa-building",
+                  name: "BPA (Cấp độ Doanh nghiệp)",
+                  detail:
+                    "Business Process Automation: Tự động hóa quy trình liên phòng ban (ERP, CRM, Onboarding nhân sự mới).",
+                },
+                {
+                  icon: "fa-robot",
+                  name: "RPA (Cấp độ Ứng dụng)",
+                  detail:
+                    "Robotic Process Automation: Robot phần mềm bắt chước thao tác chuột/phím của con người để nhập liệu 24/7.",
+                },
+                {
+                  icon: "fa-server",
+                  name: "IaC (Cấp độ Hạ tầng)",
+                  detail:
+                    "Infrastructure as Code: Cấp phát và cấu hình toàn bộ máy chủ, mạng lưới bằng tệp mã cấu hình tự động.",
+                },
+              ],
+            },
+            {
+              heading:
+                "3. Chuyển dịch phương thức phát triển: Low-code, No-code & Vibe Coding",
+              type: "comparison",
+              leftTitle: "Low-code & No-code (Trực quan hóa)",
+              leftPoints: [
+                "No-code: Xây dựng ứng dụng bằng giao diện kéo-thả 100% không cần viết mã, trao quyền cho nhân sự phi kỹ thuật.",
+                "Low-code: Kết hợp kéo-thả với các đoạn mã đơn giản để tùy chỉnh nâng cao và kết nối API nhanh chóng.",
+                "Lợi ích: Rút ngắn thời gian ra mắt sản phẩm (Time-to-market), giảm tải cho đội ngũ IT.",
+              ],
+              rightTitle: "Vibe Coding (Lập trình hội thoại cùng AI)",
+              rightPoints: [
+                "Khái niệm: Người dùng đóng vai trò kiến trúc sư định hướng ý tưởng bằng ngôn ngữ tự nhiên; AI viết toàn bộ mã.",
+                "Quy trình 4 bước: Mô tả (Prompt) -> Tạo (Generate) -> Thực thi (Run) -> Tinh chỉnh (Refine) và Publish 1 cú nhấp chuột.",
+                "Thách thức mới: Cần kỹ năng thẩm định mã nguồn (Code Review) để tránh rủi ro 'hộp đen AI'.",
+              ],
+            },
+          ],
+          keyTakeaways:
+            "AI không thay thế lập trình viên mà chuyển dịch vai trò của chúng ta từ người trực tiếp gõ từng dòng lệnh sang người điều phối kiến trúc và thẩm định hệ thống.",
+          digitalLibrary: {
+            slideFile:
+              "Slide 6 - Computational thinking, IT Automation.pptx (47 trang)",
+            mediaDesc:
+              "Sơ đồ 4 bước Tư duy thuật toán, Phân loại BPA/RPA/IaC & Vòng lặp Vibe Coding",
+            externalLink: {
+              title: "BBC Bitesize - Introduction to Computational Thinking",
+              url: "https://www.bbc.co.uk/bitesize/guides/zp92mp3/revision/1",
+              domain: "bbc.co.uk",
+              desc: "Hướng dẫn trực quan kinh điển về 4 thành phần của Tư duy máy tính (Decomposition, Pattern Recognition, Abstraction, Algorithms).",
+            },
+          },
+        },
+        {
+          id: 7,
+          shortTitle: "Bài 7: AI, Data & Prompting",
+          title: "Trí tuệ Nhân tạo, Dữ liệu & Kỹ thuật Prompt Engineering",
+          subtitle:
+            "Lịch sử AI & Kiến trúc Transformer, Phân loại ANI-AGI-ASI, Nghệ thuật viết Prompt hiệu quả và Chuỗi giá trị Big Data 4V.",
+          duration: "55 phút",
+          icon: "fa-wand-magic-sparkles",
+          color: "amber",
+          objectives: [
+            "Nắm được các cột mốc lịch sử AI (Phép thử Turing 1950, Mùa đông AI, Deep Learning và Transformer 2017).",
+            "Phân biệt 3 cấp độ AI: AI Hẹp (ANI), AI Tổng quát (AGI) và Siêu trí tuệ nhân tạo (ASI).",
+            "Thành thạo cấu trúc 4 thành phần của một Prompt chuẩn và 3 kỹ thuật: Zero-shot, Few-shot, Chain of Thought.",
+            "Hiểu ma trận 4V của Big Data và chuỗi cung ứng dữ liệu từ cảm biến đến chính sách.",
+          ],
+          sections: [
+            {
+              heading: "1. Ba cấp độ phát triển của Trí tuệ nhân tạo",
+              type: "pillars",
+              items: [
+                {
+                  icon: "fa-bullseye",
+                  name: "ANI (Artificial Narrow Intelligence)",
+                  detail:
+                    "AI Hẹp (Hiện tại): Chuyên biệt cho từng nhiệm vụ cụ thể (FaceID, lọc spam, ChatGPT, xe tự lái), chưa có ý thức tự chủ.",
+                },
+                {
+                  icon: "fa-brain",
+                  name: "AGI (Artificial General Intelligence)",
+                  detail:
+                    "AI Tổng quát (Tương lai): Năng lực nhận thức, tự học hỏi và sáng tạo đa nhiệm ngang tầm trí tuệ con người.",
+                },
+                {
+                  icon: "fa-atom",
+                  name: "ASI (Artificial Superintelligence)",
+                  detail:
+                    "Siêu trí tuệ (Giả thuyết): Vượt xa trí tuệ nhân loại trên mọi lĩnh vực, đặt ra bài toán kiểm soát an toàn tồn vong.",
+                },
+                {
+                  icon: "fa-bolt",
+                  name: "Đột phá Transformer (2017)",
+                  detail:
+                    "Cơ chế Attention thấu hiểu ngữ cảnh sâu sắc, khai sinh kỷ nguyên AI Tạo sinh (Generative AI & LLMs).",
+                },
+              ],
+            },
+            {
+              heading: "2. Nghệ thuật & Khoa học Prompt Engineering",
+              type: "grid-4",
+              items: [
+                {
+                  badge: "Thành phần Prompt",
+                  title: "4 Yếu tố cấu thành",
+                  desc: "1. Ngữ cảnh (Context/Vai trò) + 2. Chỉ thị cốt lõi (Instruction) + 3. Ví dụ mẫu (Examples) + 4. Định dạng đầu ra (Format).",
+                },
+                {
+                  badge: "Kỹ thuật 1",
+                  title: "Zero-shot Prompting",
+                  desc: "Ra lệnh trực tiếp không cần ví dụ mẫu. Phù hợp cho dịch thuật, tóm tắt nhanh, gợi ý ý tưởng cơ bản.",
+                },
+                {
+                  badge: "Kỹ thuật 2",
+                  title: "Few-shot Prompting",
+                  desc: "Cung cấp 2-3 cặp Input-Output mẫu để AI nắm bắt chính xác văn phong, giọng điệu và cấu trúc dữ liệu mong muốn.",
+                },
+                {
+                  badge: "Kỹ thuật 3",
+                  title: "Chain of Thought (CoT)",
+                  desc: "Yêu cầu AI 'suy nghĩ từng bước một' để giải quyết các bài toán logic, lập trình phức tạp và giảm thiểu ảo giác (Hallucination).",
+                },
+              ],
+            },
+            {
+              heading: "3. Ma trận 4V của Dữ liệu lớn (Big Data) & Tác động AI",
+              type: "comparison",
+              leftTitle: "Ma trận 4V của Big Data",
+              leftPoints: [
+                "Volume (Khối lượng): Lượng dữ liệu khổng lồ sinh ra mỗi giây (đạt hàng trăm Zettabytes).",
+                "Velocity (Tốc độ): Thu thập và xử lý dữ liệu theo thời gian thực.",
+                "Variety (Đa dạng): Dữ liệu có cấu trúc, bán cấu trúc và phi cấu trúc (ảnh, video, âm thanh).",
+                "Veracity (Độ tin cậy): Làm sạch nhiễu và loại bỏ thiên kiến (Bias) trong dữ liệu.",
+              ],
+              rightTitle: "Tác động đa chiều & Rủi ro của AI",
+              rightPoints: [
+                "Tích cực: Đột phá y sinh (AlphaFold), trợ lý học tập cá nhân hóa, tự động hóa tài chính và giao thông.",
+                "Thách thức đạo đức: Thiên kiến thuật toán do dữ liệu mất cân bằng, xâm phạm quyền riêng tư và Deepfake.",
+                "Môi trường: 1 truy vấn AI tiêu tốn điện năng gấp ~10 lần tìm kiếm Google truyền thống.",
+              ],
+            },
+          ],
+          keyTakeaways:
+            "Dữ liệu là nhiên liệu, AI là động cơ, và tư duy phản biện của con người chính là vô-lăng định hướng. Thành thạo Prompt Engineering giúp bạn nhân gấp bội năng suất học tập.",
+          digitalLibrary: {
+            slideFile:
+              "Slide 7 - AI, Data in studying, working.pptx (62 trang)",
+            mediaDesc:
+              "Bản đồ lịch sử AI (1950-2026), Ma trận kỹ thuật Prompt & Chuỗi cung ứng dữ liệu 4V",
+            externalLink: {
+              title: "Google AI - Prompt Design Strategies & Documentation",
+              url: "https://ai.google.dev/gemini-api/docs/prompting-strategies",
+              domain: "ai.google.dev",
+              desc: "Tài liệu chính thức từ Google hướng dẫn chi tiết kỹ thuật thiết kế Prompt (Zero-shot, Few-shot, System Instructions) cho mô hình Gemini.",
+            },
+          },
+        },
+        {
+          id: 8,
+          shortTitle: "Bài 8: An toàn TT & Đạo đức số",
+          title: "An toàn Thông tin, Đạo đức số & Pháp luật Không gian mạng",
+          subtitle:
+            "Tam giác bảo mật CIA, Tiêu chuẩn ISO 27000, Đạo đức số (UNESCO, Microsoft, Google, OpenAI), Luật Việt Nam & Phòng chống Deepfake.",
+          duration: "50 phút",
+          icon: "fa-shield-halved",
+          color: "rose",
+          objectives: [
+            "Phân tích 3 trụ cột của Tam giác bảo mật thông tin CIA (Confidentiality, Integrity, Availability).",
+            "Hiểu hệ thống quản lý an toàn thông tin ISMS theo tiêu chuẩn quốc tế ISO 27000.",
+            "So sánh khung Đạo đức AI của 4 tổ chức hàng đầu: UNESCO, Microsoft, Google và OpenAI.",
+            "Nắm vững 3 đạo luật công nghệ quan trọng tại Việt Nam và 3 tuyến phòng thủ chống lại Deepfake.",
+          ],
+          sections: [
+            {
+              heading:
+                "1. Tam giác Bảo mật CIA & Quản lý An toàn Thông tin (ISMS)",
+              type: "pillars",
+              items: [
+                {
+                  icon: "fa-lock",
+                  name: "Tính Bảo mật (Confidentiality)",
+                  detail:
+                    "Đảm bảo thông tin chỉ được truy cập bởi những cá nhân hoặc hệ thống được cấp phép hợp lệ (mã hóa, xác thực).",
+                },
+                {
+                  icon: "fa-check-circle",
+                  name: "Tính Toàn vẹn (Integrity)",
+                  detail:
+                    "Dữ liệu phải duy trì sự chính xác, đầy đủ và không bị sửa đổi trái phép trong suốt vòng đời lưu trữ/truyền tải.",
+                },
+                {
+                  icon: "fa-server",
+                  name: "Tính Sẵn sàng (Availability)",
+                  detail:
+                    "Hệ thống và dữ liệu luôn sẵn sàng phục vụ ngay khi người dùng hợp lệ cần truy cập (chống DDoS, sao lưu).",
+                },
+                {
+                  icon: "fa-certificate",
+                  name: "Tiêu chuẩn ISO 27000",
+                  detail:
+                    "Hệ thống ISMS quản trị rủi ro dựa trên 4 trụ cột: Nhận diện rủi ro -> Thiết lập kiểm soát -> Con người -> Cải tiến.",
+                },
+              ],
+            },
+            {
+              heading: "2. Khung Đạo đức số qua 4 Lăng kính Toàn cầu",
+              type: "grid-4",
+              items: [
+                {
+                  badge: "01 / UNESCO",
+                  title: "Chiếc ô Toàn cầu",
+                  desc: "Hiệp ước định hướng luật pháp quốc gia: Bảo vệ quyền con người, giám sát của con người, minh bạch và đa dạng văn hóa.",
+                },
+                {
+                  badge: "02 / Microsoft",
+                  title: "6 Trụ cột Thực hành",
+                  desc: "Tích hợp đạo đức vào mã nguồn: Công bằng, Đáng tin & An toàn, Bảo mật, Hòa nhập, Minh bạch và Trách nhiệm giải trình.",
+                },
+                {
+                  badge: "03 / Google",
+                  title: "Nghệ thuật Cân bằng",
+                  desc: "Đổi mới táo bạo (Bold Innovation) đi kèm Phát triển có trách nhiệm (Responsible Development), kiểm tra an toàn nghiêm ngặt.",
+                },
+                {
+                  badge: "04 / OpenAI",
+                  title: "La bàn hướng tới AGI",
+                  desc: "Đảm bảo Siêu trí tuệ (AGI) an toàn dài hạn, phân phối lợi ích cho toàn nhân loại và hợp tác toàn cầu.",
+                },
+              ],
+            },
+            {
+              heading: "3. Hành lang Pháp lý Công nghệ số tại Việt Nam",
+              type: "text-cards",
+              cards: [
+                {
+                  title: "Luật An ninh mạng (24/2018/QH14)",
+                  content:
+                    "Hiệu lực từ 01/01/2019. Quy định bảo vệ an ninh quốc gia và trật tự an toàn xã hội trên không gian mạng; trách nhiệm của tổ chức, cá nhân khi tham gia môi trường số.",
+                },
+                {
+                  title: "Luật Bảo vệ dữ liệu cá nhân (91/2025/QH15)",
+                  content:
+                    "Hiệu lực từ 01/01/2026. Quy định chặt chẽ quyền của chủ thể dữ liệu, sự đồng thuận khi thu thập và trách nhiệm bảo vệ dữ liệu công dân Việt Nam.",
+                },
+                {
+                  title: "Luật Trí tuệ nhân tạo (134/2025/QH15)",
+                  content:
+                    "Hiệu lực từ 01/03/2026. Điều chỉnh hoạt động nghiên cứu, phát triển, cung cấp và sử dụng hệ thống AI an toàn, minh bạch và có trách nhiệm tại Việt Nam.",
+                },
+              ],
+            },
+            {
+              heading: "4. Vấn đề Deepfake & Hệ sinh thái 3 Tuyến phòng thủ",
+              type: "comparison",
+              leftTitle: "Rủi ro từ Phương tiện tổng hợp & Deepfake",
+              leftPoints: [
+                "Dự báo tới 90% nội dung trực tuyến có sự tham gia của AI tạo sinh.",
+                "Cá nhân: Tống tiền, trộm cắp danh tính, lừa đảo tài chính qua cuộc gọi giả mạo.",
+                "Tổ chức & Xã hội: Giả mạo lãnh đạo doanh nghiệp, thao túng thông tin và xói mòn niềm tin.",
+              ],
+              rightTitle: "3 Tuyến phòng thủ Toàn cầu",
+              rightPoints: [
+                "Tuyến 1 (Chính sách): Đạo luật AI bắt buộc dán nhãn nội dung AI, bảo vệ quyền người tiêu dùng (WIPO).",
+                "Tuyến 2 (Nhận diện): Thuật toán CNN/R-CNN phân tích bất thường khung hình và dấu hiệu sinh học nhịp tim (PPG).",
+                "Tuyến 3 (Xác thực nguồn gốc): Thủy vân số (Watermarking) và siêu dữ liệu chống giả mạo chuẩn C2PA (Content Credentials).",
+              ],
+            },
+          ],
+          keyTakeaways:
+            "Trong kỷ nguyên AI, công nghệ là động cơ nhưng Đạo đức số và Pháp luật là vô-lăng. Mỗi sinh viên cần trở thành một công dân số tỉnh táo, tuân thủ pháp luật và bảo vệ dữ liệu cá nhân.",
+          digitalLibrary: {
+            slideFile:
+              "Slide 8 - An toàn thông tin và Đạo đức số.pptx (43 trang)",
+            mediaDesc:
+              "Tam giác CIA, Ma trận Đạo đức số 4 tổ chức & Hệ thống xác thực C2PA",
+            externalLink: {
+              title:
+                "Cổng Thông tin Quốc gia về Bảo vệ Dữ liệu Cá nhân (Bộ Công An)",
+              url: "https://baovedlcn.gov.vn/",
+              domain: "baovedlcn.gov.vn",
+              desc: "Trang thông tin chính thống của Bộ Công An về pháp luật bảo vệ dữ liệu cá nhân, an ninh mạng và kỹ năng phòng chống lừa đảo trực tuyến.",
+            },
+          },
+        },
+      ];
+
+      // =========================================================================
+      // 2. DỮ LIỆU MẪU 10 GHI CHÚ TRẢI DÀI 6 NGÀY HỌC TẬP (ĐÁP ỨNG TIÊU CHÍ Y5)
+      // =========================================================================
+      const defaultSampleNotes = [
+        {
+          id: 101,
+          lessonId: 1,
+          day: "Ngày 1",
+          title: "Phân biệt bản chất Tin học hóa và Chuyển đổi số (CĐS)",
+          content:
+            "Tin học hóa chỉ là số hóa dữ liệu từ giấy lên máy tính (ví dụ scan tài liệu PDF) mà không đổi quy trình. Chuyển đổi số là thay đổi toàn diện mô hình vận hành và tư duy dựa trên dữ liệu, như Cổng Dịch vụ công Quốc gia giúp làm thủ tục 100% online. Thách thức lớn nhất của CĐS là thay đổi thói quen con người.",
+          tags: ["CMCN4.0", "ChuyenDoiSo", "DichVuCong", "TuDuySo"],
+          important: true,
+          aiSummary:
+            "CĐS thay đổi toàn diện mô hình vận hành chứ không chỉ số hóa dữ liệu đơn thuần; rào cản lớn nhất nằm ở thói quen con người.",
+          createdAt: "08:30 - Ngày 1",
+        },
+        {
+          id: 102,
+          lessonId: 1,
+          day: "Ngày 1",
+          title: "4 Trụ cột công nghệ thời đại 4.0 & Định hướng UNIDO",
+          content:
+            "Bốn công nghệ cốt lõi gồm AI (trí tuệ nhân tạo), IoT (kết nối vạn vật), Big Data (dữ liệu lớn 3V) và Cloud Computing (điện toán đám mây). Theo Liên Hợp Quốc (UNIDO), công nghệ không phải đích đến mà là công cụ để đạt 17 Mục tiêu Phát triển Bền vững (SDGs) vì con người và hành tinh.",
+          tags: ["AI", "IoT", "BigData", "Cloud", "UNIDO", "SDGs"],
+          important: false,
+          aiSummary:
+            "AI, IoT, Big Data và Cloud là 4 động lực kỹ thuật cốt lõi nhằm hiện thực hóa 17 mục tiêu phát triển bền vững SDGs.",
+          createdAt: "14:15 - Ngày 1",
+        },
+        {
+          id: 103,
+          lessonId: 2,
+          day: "Ngày 2",
+          title: "Cấu trúc phần cứng & Tiêu chí chọn Laptop cho sinh viên IT",
+          content:
+            "Máy tính hoạt động theo mô hình Input -> Process (CPU) -> Output -> Storage. Để học lập trình mượt mà, cần chọn Laptop có CPU đa nhân (Core i5/Ryzen 5 trở lên), RAM 16GB (DDR4/DDR5) để chạy đa nhiệm nhiều tab và Docker, ổ cứng SSD NVMe tốc độ cao thay cho HDD.",
+          tags: ["PhanCung", "CPU", "RAM16GB", "SSDNVMe", "LaptopIT"],
+          important: true,
+          aiSummary:
+            "Cấu hình tối ưu cho sinh viên CNTT: CPU đa nhân + RAM 16GB + ổ cứng SSD NVMe để đảm bảo hiệu năng đa nhiệm.",
+          createdAt: "09:00 - Ngày 2",
+        },
+        {
+          id: 104,
+          lessonId: 2,
+          day: "Ngày 2",
+          title: "Kiến trúc chuyên biệt (DSA/TPU) & Máy tính lượng tử (Qubit)",
+          content:
+            "Khi định luật Moore chạm giới hạn vật lý, phần cứng dịch chuyển sang chip chuyên biệt DSA như Google TPU chuyên nhân ma trận cho AI. Trong tương lai, máy tính lượng tử dùng đơn vị Qubit (trạng thái chồng chập vừa 0 vừa 1) giúp giải bài toán mật mã và mô phỏng siêu tốc.",
+          tags: ["DSA", "GoogleTPU", "QuantumComputing", "Qubit"],
+          important: false,
+          aiSummary:
+            "Chip chuyên biệt TPU tối ưu cho AI hiện tại, trong khi Qubit lượng tử mở ra khả năng tính toán song song đột phá tương lai.",
+          createdAt: "16:20 - Ngày 2",
+        },
+        {
+          id: 105,
+          lessonId: 3,
+          day: "Ngày 3",
+          title: "So sánh Máy ảo truyền thống (VM) và Container (Docker)",
+          content:
+            "Máy ảo (VM) chạy trên Hypervisor và phải cài nguyên một hệ điều hành khách (Guest OS) nên rất nặng (hàng chục GB) và khởi động mất vài phút. Ngược lại, Container (Docker) chia sẻ nhân Kernel của máy chủ, dung lượng chỉ vài chục MB và khởi động trong vài giây.",
+          tags: ["HeDieuHanh", "VirtualMachine", "Docker", "Container"],
+          important: true,
+          aiSummary:
+            "Docker nhẹ hơn và khởi động nhanh hơn VM nhiều lần nhờ dùng chung nhân OS thay vì cài đặt hệ điều hành khách riêng.",
+          createdAt: "10:10 - Ngày 3",
+        },
+        {
+          id: 106,
+          lessonId: 4,
+          day: "Ngày 3",
+          title: "Phân biệt 3 mô hình dịch vụ đám mây: IaaS, PaaS và SaaS",
+          content:
+            "IaaS (Hạ tầng như dịch vụ - AWS EC2): thuê máy chủ ảo, tự cài OS. PaaS (Nền tảng như dịch vụ - Google App Engine): nhà cung cấp lo hạ tầng, lập trình viên chỉ tập trung viết code. SaaS (Phần mềm như dịch vụ - Google Workspace, Microsoft 365): dùng ngay trên web không cần cài đặt.",
+          tags: ["CloudComputing", "IaaS", "PaaS", "SaaS", "NIST"],
+          important: true,
+          aiSummary:
+            "Mức độ quản lý giảm dần từ IaaS (hạ tầng) -> PaaS (môi trường code) -> SaaS (ứng dụng hoàn chỉnh cho người dùng cuối).",
+          createdAt: "15:45 - Ngày 3",
+        },
+        {
+          id: 107,
+          lessonId: 5,
+          day: "Ngày 4",
+          title: "Khác biệt giữa giao thức TCP và UDP & Vai trò của IPv6",
+          content:
+            "TCP đảm bảo truyền tin cậy, kiểm tra lỗi và đúng thứ tự (dùng cho Web HTTP, Email). UDP ưu tiên tốc độ tối đa, chấp nhận mất gói nhỏ (dùng cho Livestream, Game online). IPv6 với 128-bit khắc phục sự cạn kiệt địa chỉ IPv4, cấp đủ IP cho hàng tỷ thiết bị IoT và mạng 5G/6G.",
+          tags: ["MangMayTinh", "TCP", "UDP", "IPv6", "IoT", "5G"],
+          important: false,
+          aiSummary:
+            "TCP ưu tiên độ chính xác dữ liệu, UDP ưu tiên tốc độ thời gian thực; IPv6 giải quyết bài toán địa chỉ cho kỷ nguyên IoT.",
+          createdAt: "08:50 - Ngày 4",
+        },
+        {
+          id: 108,
+          lessonId: 6,
+          day: "Ngày 4",
+          title: "4 bước Tư duy Máy tính & Xu hướng Vibe Coding cùng AI",
+          content:
+            "Tư duy máy tính gồm 4 bước: Phân rã bài toán -> Trừu tượng hóa -> Nhận diện khuôn mẫu -> Thiết kế thuật toán. Kỷ nguyên Vibe Coding cho phép lập trình qua hội thoại ngôn ngữ tự nhiên theo vòng lặp: Mô tả -> Tạo -> Thực thi -> Tinh chỉnh, biến lập trình viên thành kiến trúc sư điều phối AI.",
+          tags: [
+            "TuDuyLapTrinh",
+            "ComputationalThinking",
+            "VibeCoding",
+            "Automation",
+          ],
+          important: true,
+          aiSummary:
+            "Kết hợp 4 bước tư duy thuật toán với Vibe Coding giúp hiện thực hóa phần mềm nhanh chóng qua hội thoại tự nhiên với AI.",
+          createdAt: "19:30 - Ngày 4",
+        },
+        {
+          id: 109,
+          lessonId: 7,
+          day: "Ngày 5",
+          title:
+            "Công thức viết Prompt chuẩn & Kỹ thuật Chain of Thought (CoT)",
+          content:
+            "Một Prompt hiệu quả gồm 4 phần: Ngữ cảnh (Context) + Chỉ thị (Instruction) + Ví dụ mẫu (Examples) + Định dạng (Format). Với các bài toán lập trình hoặc suy luận logic khó, cần dùng kỹ thuật Chain of Thought (thêm câu 'Hãy suy nghĩ từng bước một') để giảm ảo giác AI.",
+          tags: [
+            "PromptEngineering",
+            "ZeroShot",
+            "FewShot",
+            "ChainOfThought",
+            "AI",
+          ],
+          important: true,
+          aiSummary:
+            "Cấu trúc 4 phần rõ ràng kết hợp suy luận từng bước (CoT) giúp mở khóa độ chính xác tối đa của các mô hình ngôn ngữ lớn.",
+          createdAt: "11:15 - Ngày 5",
+        },
+        {
+          id: 110,
+          lessonId: 8,
+          day: "Ngày 6",
+          title: "Tam giác bảo mật CIA, Luật Việt Nam & Phòng chống Deepfake",
+          content:
+            "An toàn thông tin dựa trên 3 trụ cột CIA: Confidentiality (Bảo mật), Integrity (Toàn vẹn), Availability (Sẵn sàng). Tại Việt Nam cần tuân thủ Luật An ninh mạng 2018, Luật Bảo vệ dữ liệu cá nhân (hiệu lực 2026) và Luật Trí tuệ nhân tạo (hiệu lực 2026). Chống Deepfake cần kết hợp chuẩn xác thực nguồn gốc C2PA.",
+          tags: [
+            "AnToanThongTin",
+            "CIA",
+            "DaoDucSo",
+            "Deepfake",
+            "C2PA",
+            "LuatAI",
+          ],
+          important: true,
+          aiSummary:
+            "Bảo vệ tài sản số đòi hỏi kết hợp tam giác CIA, tuân thủ hành lang pháp lý Việt Nam (Luật AI & DLCN) và xác thực nội dung C2PA.",
+          createdAt: "14:00 - Ngày 6",
+        },
+      ];
+
+      // =========================================================================
+      // 3. STATE MANAGEMENT & LOCALSTORAGE INITIALIZATION
+      // =========================================================================
+      let currentLessonId = 1;
+      let completedLessons = JSON.parse(
+        localStorage.getItem("fpoly_cntt40_completed"),
+      ) || [1, 2];
+      let notesList =
+        JSON.parse(localStorage.getItem("fpoly_cntt40_notes")) ||
+        defaultSampleNotes;
+
+      function saveState() {
+        localStorage.setItem(
+          "fpoly_cntt40_completed",
+          JSON.stringify(completedLessons),
+        );
+        localStorage.setItem("fpoly_cntt40_notes", JSON.stringify(notesList));
+        updateProgressUI();
+        updateNoteStats();
+      }
+
+      // =========================================================================
+      // 4. UI NAVIGATION & PROGRESS CONTROLS
+      // =========================================================================
+      function switchMainTab(tabName) {
+        const modules = ["library", "notes", "wireframe"];
+        modules.forEach((mod) => {
+          const el = document.getElementById(`module-${mod}`);
+          const btn = document.getElementById(`tab-btn-${mod}`);
+          const mBtn = document.getElementById(`m-tab-btn-${mod}`);
+
+          if (mod === tabName) {
+            el.classList.remove("hidden");
+            if (btn) {
+              btn.classList.add("bg-orange-500", "text-white", "shadow-sm");
+              btn.classList.remove("text-slate-300", "hover:text-white");
+            }
+            if (mBtn) {
+              mBtn.classList.add("bg-orange-500", "text-white");
+              mBtn.classList.remove("bg-slate-800", "text-slate-300");
+            }
+          } else {
+            el.classList.add("hidden");
+            if (btn) {
+              btn.classList.remove("bg-orange-500", "text-white", "shadow-sm");
+              btn.classList.add("text-slate-300", "hover:text-white");
+            }
+            if (mBtn) {
+              mBtn.classList.remove("bg-orange-500", "text-white");
+              mBtn.classList.add("bg-slate-800", "text-slate-300");
+            }
+          }
+        });
+
+        if (tabName === "notes") {
+          renderNotesList();
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function toggleMobileSidebar(show) {
+        const sidebar = document.getElementById("lesson-sidebar");
+        const backdrop = document.getElementById("sidebar-backdrop");
+        if (show) {
+          sidebar.classList.remove("-translate-x-full");
+          backdrop.classList.remove("hidden");
+        } else {
+          sidebar.classList.add("-translate-x-full");
+          backdrop.classList.add("hidden");
+        }
+      }
+
+      document
+        .getElementById("mobile-menu-btn")
+        .addEventListener("click", () => toggleMobileSidebar(true));
+      document
+        .getElementById("close-sidebar-btn")
+        .addEventListener("click", () => toggleMobileSidebar(false));
+
+      function updateProgressUI() {
+        const count = completedLessons.length;
+        const total = lessonsData.length;
+        const percent = Math.round((count / total) * 100);
+        document.getElementById("progress-text").textContent =
+          `${count}/${total} Bài (${percent}%)`;
+        document.getElementById("progress-bar").style.width = `${percent}%`;
+      }
+
+      function toggleLessonCompletion(lessonId) {
+        const idx = completedLessons.indexOf(lessonId);
+        if (idx > -1) {
+          completedLessons.splice(idx, 1);
+          showToast(`Đã bỏ đánh dấu hoàn thành Bài ${lessonId}`, "info");
+        } else {
+          completedLessons.push(lessonId);
+          showToast(`Chúc mừng! Bạn đã hoàn thành Bài ${lessonId}`, "success");
+        }
+        saveState();
+        renderSidebarLessons();
+        renderLessonDetail(lessonId);
+      }
+
+      // =========================================================================
+      // 5. RENDERING MODULE 1: THƯ VIỆN 8 BÀI HỌC CHI TIẾT
+      // =========================================================================
+      function renderSidebarLessons() {
+        const container = document.getElementById("lesson-nav-list");
+        container.innerHTML = lessonsData
+          .map((lesson) => {
+            const isActive = lesson.id === currentLessonId;
+            const isDone = completedLessons.includes(lesson.id);
+            return `
+                    <button onclick="selectLesson(${lesson.id})" class="w-full text-left p-3 rounded-xl transition-all flex items-center justify-between gap-2.5 border ${isActive ? "bg-orange-50 border-orange-300 text-slate-900 shadow-xs" : "bg-white border-transparent hover:bg-slate-50 text-slate-600"}">
+                        <div class="flex items-center gap-3 min-w-0">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-xs font-bold ${isActive ? "bg-orange-500 text-white" : isDone ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"}">
+                                ${isDone ? '<i class="fa-solid fa-check"></i>' : `0${lesson.id}`}
+                            </div>
+                            <div class="truncate">
+                                <div class="text-xs font-bold truncate ${isActive ? "text-orange-700" : "text-slate-800"}">${lesson.shortTitle}</div>
+                                <div class="text-[11px] text-slate-400 truncate">${lesson.duration} • Có link tham khảo</div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[10px] ${isActive ? "text-orange-500" : "text-slate-300"}"></i>
+                    </button>
+                `;
+          })
+          .join("");
+      }
+
+      function selectLesson(id) {
+        currentLessonId = id;
+        renderSidebarLessons();
+        renderLessonDetail(id);
+        toggleMobileSidebar(false);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function renderLessonDetail(id) {
+        const lesson = lessonsData.find((l) => l.id === id);
+        if (!lesson) return;
+        const isDone = completedLessons.includes(lesson.id);
+        const lessonNotes = notesList.filter((n) => n.lessonId === lesson.id);
+
+        const container = document.getElementById("lesson-content-area");
+
+        // Render Sections HTML based on section layout type
+        const sectionsHtml = lesson.sections
+          .map((sec) => {
+            if (sec.type === "grid-4") {
+              return `
+                        <div class="space-y-3">
+                            <h3 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <span class="w-1.5 h-5 rounded-full bg-orange-500"></span>
+                                ${sec.heading}
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                                ${sec.items
+                                  .map(
+                                    (item) => `
+                                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-orange-300 transition-colors">
+                                        <span class="inline-block px-2.5 py-0.5 rounded-md bg-blue-900 text-white text-[11px] font-bold mb-2">${item.badge}</span>
+                                        <h4 class="font-bold text-slate-900 text-sm mb-1">${item.title}</h4>
+                                        <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+                                    </div>
+                                `,
+                                  )
+                                  .join("")}
+                            </div>
+                        </div>
+                    `;
+            } else if (sec.type === "pillars") {
+              return `
+                        <div class="space-y-3">
+                            <h3 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <span class="w-1.5 h-5 rounded-full bg-blue-600"></span>
+                                ${sec.heading}
+                            </h3>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                                ${sec.items
+                                  .map(
+                                    (item) => `
+                                    <div class="p-4 rounded-xl bg-white border border-slate-200 shadow-2xs flex items-start gap-3.5">
+                                        <div class="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 border border-orange-100 flex items-center justify-center shrink-0 mt-0.5">
+                                            <i class="fa-solid ${item.icon} text-base"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-slate-900 text-sm">${item.name}</h4>
+                                            <p class="text-xs text-slate-600 leading-relaxed mt-1">${item.detail}</p>
+                                        </div>
+                                    </div>
+                                `,
+                                  )
+                                  .join("")}
+                            </div>
+                        </div>
+                    `;
+            } else if (sec.type === "comparison") {
+              return `
+                        <div class="space-y-3">
+                            <h3 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <span class="w-1.5 h-5 rounded-full bg-emerald-500"></span>
+                                ${sec.heading}
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="p-4 rounded-xl bg-slate-100/80 border border-slate-200">
+                                    <div class="font-bold text-slate-800 text-sm mb-2.5 pb-2 border-b border-slate-200 flex items-center gap-2">
+                                        <i class="fa-solid fa-circle-dot text-slate-500 text-xs"></i>
+                                        <span>${sec.leftTitle}</span>
+                                    </div>
+                                    <ul class="space-y-2 text-xs text-slate-700">
+                                        ${sec.leftPoints.map((pt) => `<li class="flex items-start gap-2"><i class="fa-solid fa-angle-right text-slate-400 mt-0.5"></i><span>${pt}</span></li>`).join("")}
+                                    </ul>
+                                </div>
+                                <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-200">
+                                    <div class="font-bold text-blue-950 text-sm mb-2.5 pb-2 border-b border-blue-200/70 flex items-center gap-2">
+                                        <i class="fa-solid fa-star text-orange-500 text-xs"></i>
+                                        <span>${sec.rightTitle}</span>
+                                    </div>
+                                    <ul class="space-y-2 text-xs text-slate-800">
+                                        ${sec.rightPoints.map((pt) => `<li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-600 mt-0.5"></i><span>${pt}</span></li>`).join("")}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+            } else {
+              return `
+                        <div class="space-y-3">
+                            <h3 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
+                                <span class="w-1.5 h-5 rounded-full bg-indigo-500"></span>
+                                ${sec.heading}
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                                ${sec.cards
+                                  .map(
+                                    (c) => `
+                                    <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/90">
+                                        <h4 class="font-bold text-slate-900 text-sm mb-1.5">${c.title}</h4>
+                                        <p class="text-xs text-slate-600 leading-relaxed">${c.content}</p>
+                                    </div>
+                                `,
+                                  )
+                                  .join("")}
+                            </div>
+                        </div>
+                    `;
+            }
+          })
+          .join("");
+
+        container.innerHTML = `
+                <!-- Lesson Hero Card -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <span class="px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-extrabold">CHUYÊN ĐỀ 0${lesson.id} / 08</span>
+                            <span class="text-xs text-slate-500 font-medium"><i class="fa-regular fa-clock mr-1"></i>${lesson.duration}</span>
+                        </div>
+                        <button onclick="toggleLessonCompletion(${lesson.id})" class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 self-start sm:self-auto ${isDone ? "bg-emerald-100 text-emerald-800 border border-emerald-300" : "bg-slate-900 hover:bg-slate-800 text-white"}">
+                            <i class="fa-solid ${isDone ? "fa-circle-check text-emerald-600" : "fa-check"}"></i>
+                            <span>${isDone ? "Đã hoàn thành bài học" : "Đánh dấu hoàn thành"}</span>
+                        </button>
+                    </div>
+
+                    <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-4 leading-snug">${lesson.title}</h1>
+                    <p class="text-sm text-slate-600 mt-1.5">${lesson.subtitle}</p>
+
+                    <!-- Learning Objectives Box -->
+                    <div class="mt-5 p-4 rounded-xl bg-slate-900 text-white">
+                        <div class="text-xs font-bold uppercase tracking-wider text-orange-400 mb-2 flex items-center gap-1.5">
+                            <i class="fa-solid fa-bullseye"></i>
+                            <span>Mục tiêu chuẩn đầu ra bài học</span>
+                        </div>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-slate-200">
+                            ${lesson.objectives.map((obj) => `<li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-400 mt-0.5"></i><span>${obj}</span></li>`).join("")}
+                        </ul>
+                    </div>
+
+                    <!-- Detailed Lesson Content Sections -->
+                    <div class="mt-6 space-y-6">
+                        ${sectionsHtml}
+                    </div>
+
+                    <!-- Key Takeaway Highlight -->
+                    <div class="mt-6 p-4 rounded-xl bg-amber-50 border border-amber-200 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center shrink-0 mt-0.5">
+                            <i class="fa-solid fa-lightbulb"></i>
+                        </div>
+                        <div>
+                            <div class="text-xs font-bold uppercase text-amber-800">Ghi nhớ cốt lõi (Key Takeaway)</div>
+                            <p class="text-xs sm:text-sm text-amber-950 font-medium mt-0.5 leading-relaxed">${lesson.keyTakeaways}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DIGITAL LIBRARY RESOURCES & EXTERNAL LINK CARD (ASSIGNMENT Y2) -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-blue-600">Tài nguyên Thư viện số cá nhân (Y2)</span>
+                            <h3 class="text-lg font-bold text-slate-900">Học liệu đính kèm & Website tham khảo mở rộng</h3>
+                        </div>
+                        <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-medium">
+                            <i class="fa-solid fa-folder-open text-orange-500"></i> Đủ 4 định dạng Y2
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Y2.a: File Slide / PDF -->
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-2 text-rose-600 font-bold text-xs mb-1.5">
+                                    <i class="fa-solid fa-file-powerpoint text-base"></i>
+                                    <span>Tệp bài giảng gốc (Y2.a)</span>
+                                </div>
+                                <p class="text-xs font-semibold text-slate-800">${lesson.digitalLibrary.slideFile}</p>
+                                <p class="text-[11px] text-slate-500 mt-1">Định dạng chuẩn slide bài giảng FPT Polytechnic.</p>
+                            </div>
+                            <button onclick="showToast('Đã mở xem trước tài liệu: ${lesson.digitalLibrary.slideFile}', 'info')" class="mt-3 w-full py-2 px-3 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-semibold transition-colors">
+                                <i class="fa-regular fa-eye mr-1"></i> Xem tóm tắt Slide
+                            </button>
+                        </div>
+
+                        <!-- Y2.b: Hình ảnh / Infographic -->
+                        <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center gap-2 text-indigo-600 font-bold text-xs mb-1.5">
+                                    <i class="fa-solid fa-photo-film text-base"></i>
+                                    <span>Trực quan hóa / Media (Y2.b)</span>
+                                </div>
+                                <p class="text-xs font-semibold text-slate-800">${lesson.digitalLibrary.mediaDesc}</p>
+                                <p class="text-[11px] text-slate-500 mt-1">Sơ đồ hệ thống hóa kiến thức giúp ghi nhớ nhanh.</p>
+                            </div>
+                            <button onclick="switchMainTab('wireframe')" class="mt-3 w-full py-2 px-3 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-semibold transition-colors">
+                                <i class="fa-solid fa-diagram-project mr-1"></i> Xem sơ đồ kiến trúc
+                            </button>
+                        </div>
+
+                        <!-- Y2.c: External Reference Website Link (REQUIRED BY PROMPT) -->
+                        <div class="p-4 rounded-xl border-2 border-orange-400 bg-gradient-to-br from-orange-50 to-amber-50/60 flex flex-col justify-between shadow-xs">
+                            <div>
+                                <div class="flex items-center justify-between text-orange-700 font-bold text-xs mb-1.5">
+                                    <span><i class="fa-solid fa-link mr-1"></i>Website cùng nội dung (Y2.c)</span>
+                                    <span class="px-1.5 py-0.5 bg-orange-200/70 rounded text-[10px]">External</span>
+                                </div>
+                                <h4 class="text-xs font-extrabold text-slate-900 leading-snug">${lesson.digitalLibrary.externalLink.title}</h4>
+                                <p class="text-[11px] text-slate-600 mt-1 leading-relaxed">${lesson.digitalLibrary.externalLink.desc}</p>
+                            </div>
+                            <a href="${lesson.digitalLibrary.externalLink.url}" target="_blank" rel="noopener noreferrer" class="mt-3 w-full py-2.5 px-3 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition-all">
+                                <span>Truy cập ${lesson.digitalLibrary.externalLink.domain}</span>
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK NOTE TAKING FOR THIS LESSON (ASSIGNMENT Y2.d + PHẦN 2) -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-600">Ghi chú cá nhân hóa (Y2.d)</span>
+                            <h3 class="text-lg font-bold text-slate-900">Ghi chú nhanh cho Bài ${lesson.id} (${lessonNotes.length} ghi chú đã lưu)</h3>
+                        </div>
+                        <button onclick="switchMainTab('notes')" class="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1">
+                            <span>Mở Trình quản lý AI đầy đủ</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Quick Add Form -->
+                    <form onsubmit="addQuickNoteFromLesson(event, ${lesson.id})" class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <input type="text" id="quick-note-title" required placeholder="Tiêu đề ghi chú nhanh..." class="sm:col-span-2 px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            <select id="quick-note-day" class="px-3 py-2 rounded-lg bg-white border border-slate-300 text-xs font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                                <option value="Ngày 1">Ngày 1</option>
+                                <option value="Ngày 2">Ngày 2</option>
+                                <option value="Ngày 3">Ngày 3</option>
+                                <option value="Ngày 4">Ngày 4</option>
+                                <option value="Ngày 5">Ngày 5</option>
+                                <option value="Ngày 6" selected>Ngày 6</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="quick-note-content" required placeholder="Nhập nội dung kiến thức tâm đắc từ Bài ${lesson.id} để lưu vào SmartNote AI..." class="flex-1 px-3.5 py-2 rounded-lg bg-white border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            <button type="submit" class="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold whitespace-nowrap flex items-center justify-center gap-1.5 transition-colors">
+                                <i class="fa-solid fa-plus text-orange-400"></i>
+                                <span>Lưu & Phân tích AI</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Existing Notes for this Lesson -->
+                    <div class="mt-4 space-y-2.5">
+                        ${
+                          lessonNotes.length === 0
+                            ? `
+                            <p class="text-xs text-slate-400 italic text-center py-3">Chưa có ghi chú riêng nào cho bài học này. Hãy thêm ghi chú đầu tiên ở trên!</p>
+                        `
+                            : lessonNotes
+                                .map(
+                                  (n) => `
+                            <div class="p-3.5 rounded-xl border border-slate-200/80 bg-white hover:border-orange-200 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] font-bold">${n.day}</span>
+                                        <h4 class="font-bold text-slate-800 text-xs">${n.title}</h4>
+                                    </div>
+                                    <p class="text-xs text-slate-600 line-clamp-2">${n.content}</p>
+                                </div>
+                                <button onclick="runAiSummarize(${n.id}); switchMainTab('notes');" class="px-3 py-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold whitespace-nowrap self-start sm:self-center">
+                                    <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Phân tích AI
+                                </button>
+                            </div>
+                        `,
+                                )
+                                .join("")
+                        }
+                    </div>
+                </div>
+
+                <!-- Previous / Next Lesson Navigation -->
+                <div class="flex items-center justify-between pt-2">
+                    <button onclick="selectLesson(${lesson.id - 1})" ${lesson.id === 1 ? "disabled" : ""} class="px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:pointer-events-none flex items-center gap-2 shadow-2xs">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        <span>Bài trước</span>
+                    </button>
+                    <button onclick="selectLesson(${lesson.id + 1})" ${lesson.id === 8 ? "disabled" : ""} class="px-4 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold disabled:opacity-40 disabled:pointer-events-none flex items-center gap-2 shadow-sm">
+                        <span>Bài tiếp theo</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            `;
+      }
+
+      function addQuickNoteFromLesson(e, lessonId) {
+        e.preventDefault();
+        const title = document.getElementById("quick-note-title").value.trim();
+        const content = document
+          .getElementById("quick-note-content")
+          .value.trim();
+        const day = document.getElementById("quick-note-day").value;
+
+        if (!title || !content) return;
+
+        const autoTags = extractSmartTags(`${title} ${content}`, lessonId);
+        const newNote = {
+          id: Date.now(),
+          lessonId: lessonId,
+          day: day,
+          title: title,
+          content: content,
+          tags: autoTags,
+          important: false,
+          aiSummary: generateSmartSummaryText(content),
+          createdAt: `Vừa xong - ${day}`,
+        };
+
+        notesList.unshift(newNote);
+        saveState();
+        renderLessonDetail(lessonId);
+        showToast(
+          "Đã lưu ghi chú vào SmartNote AI & tự động gắn thẻ!",
+          "success",
+        );
+      }
+
+      // =========================================================================
+      // 6. MODULE 2: QUẢN LÝ GHI CHÚ & TRỢ LÝ AI (CRUD + AI ENGINE Y6)
+      // =========================================================================
+      function updateNoteStats() {
+        const total = notesList.length;
+        const uniqueDays = new Set(notesList.map((n) => n.day)).size;
+        const importantCount = notesList.filter((n) => n.important).length;
+
+        document.getElementById("nav-note-count").textContent = total;
+        document.getElementById("stat-total-notes").textContent = total;
+        document.getElementById("stat-total-days").textContent =
+          `${uniqueDays} Ngày`;
+        document.getElementById("stat-important-notes").textContent =
+          importantCount;
+      }
+
+      function renderNotesList() {
+        const search = (
+          document.getElementById("note-search-input")?.value || ""
+        ).toLowerCase();
+        const lessonFilter =
+          document.getElementById("note-filter-lesson")?.value || "all";
+        const dayFilter =
+          document.getElementById("note-filter-day")?.value || "all";
+
+        const filtered = notesList.filter((note) => {
+          const matchLesson =
+            lessonFilter === "all" || note.lessonId === parseInt(lessonFilter);
+          const matchDay = dayFilter === "all" || note.day === dayFilter;
+          const matchSearch =
+            !search ||
+            note.title.toLowerCase().includes(search) ||
+            note.content.toLowerCase().includes(search) ||
+            note.tags.some((t) => t.toLowerCase().includes(search));
+          return matchLesson && matchDay && matchSearch;
+        });
+
+        const container = document.getElementById("notes-grid-container");
+        if (filtered.length === 0) {
+          container.innerHTML = `
+                    <div class="col-span-full bg-white rounded-2xl p-8 text-center border border-slate-200">
+                        <i class="fa-regular fa-folder-open text-3xl text-slate-300 mb-2"></i>
+                        <h4 class="font-bold text-slate-700 text-sm">Không tìm thấy ghi chú phù hợp</h4>
+                        <p class="text-xs text-slate-500 mt-1">Hãy thử thay đổi bộ lọc hoặc tạo ghi chú mới.</p>
+                    </div>
+                `;
+          return;
+        }
+
+        container.innerHTML = filtered
+          .map((note) => {
+            const lessonObj = lessonsData.find((l) => l.id === note.lessonId);
+            return `
+                    <div class="bg-white rounded-2xl p-4 shadow-xs border ${note.important ? "border-orange-300 ring-1 ring-orange-100" : "border-slate-200"} flex flex-col justify-between hover:shadow-md transition-all">
+                        <div>
+                            <!-- Top Meta Badges -->
+                            <div class="flex items-center justify-between gap-2 mb-2.5">
+                                <div class="flex items-center gap-1.5 flex-wrap">
+                                    <span class="px-2 py-0.5 rounded-md bg-slate-900 text-white text-[10px] font-bold">${note.day}</span>
+                                    <span class="px-2 py-0.5 rounded-md bg-orange-50 text-orange-700 border border-orange-200 text-[10px] font-bold">Bài ${note.lessonId}</span>
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <button onclick="toggleImportantNote(${note.id})" title="Đánh dấu trọng tâm" class="p-1.5 rounded-lg hover:bg-amber-50 ${note.important ? "text-amber-500" : "text-slate-300"}">
+                                        <i class="fa-solid fa-star text-xs"></i>
+                                    </button>
+                                    <button onclick="openNoteModal(${note.id})" title="Chỉnh sửa" class="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-blue-600">
+                                        <i class="fa-solid fa-pen text-xs"></i>
+                                    </button>
+                                    <button onclick="deleteNote(${note.id})" title="Xóa ghi chú" class="p-1.5 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600">
+                                        <i class="fa-solid fa-trash text-xs"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Title & Content -->
+                            <h4 class="font-bold text-slate-900 text-sm leading-snug mb-1.5">${note.title}</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed mb-3">${note.content}</p>
+
+                            <!-- Tags -->
+                            <div class="flex flex-wrap gap-1 mb-3">
+                                ${note.tags.map((tag) => `<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[10px] font-medium">#${tag}</span>`).join("")}
+                            </div>
+                        </div>
+
+                        <!-- AI Action Footer Bar (Y6) -->
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between gap-1.5">
+                            <button onclick="runAiSummarize(${note.id})" class="flex-1 py-1.5 px-2 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors">
+                                <i class="fa-solid fa-align-left"></i>
+                                <span>AI Tóm tắt</span>
+                            </button>
+                            <button onclick="runAiAutoTag(${note.id})" class="flex-1 py-1.5 px-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors">
+                                <i class="fa-solid fa-tags"></i>
+                                <span>Auto-Tag</span>
+                            </button>
+                            <button onclick="runAiFlashcard(${note.id})" class="flex-1 py-1.5 px-2 rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 text-[11px] font-semibold flex items-center justify-center gap-1 transition-colors">
+                                <i class="fa-solid fa-bolt"></i>
+                                <span>Flashcard</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+          })
+          .join("");
+      }
+
+      // CRUD Modal Handlers
+      function openNoteModal(noteId = null) {
+        const modal = document.getElementById("note-modal");
+        const titleEl = document.getElementById("modal-title");
+        const form = document.getElementById("note-form");
+        form.reset();
+
+        if (noteId) {
+          const note = notesList.find((n) => n.id === noteId);
+          if (!note) return;
+          titleEl.innerHTML = `<i class="fa-solid fa-pen-to-square text-orange-400"></i><span>Chỉnh Sửa Ghi Chú</span>`;
+          document.getElementById("edit-note-id").value = note.id;
+          document.getElementById("note-title-input").value = note.title;
+          document.getElementById("note-lesson-input").value = note.lessonId;
+          document.getElementById("note-day-input").value = note.day;
+          document.getElementById("note-content-input").value = note.content;
+          document.getElementById("note-tags-input").value =
+            note.tags.join(", ");
+          document.getElementById("note-important-input").checked =
+            note.important;
+        } else {
+          titleEl.innerHTML = `<i class="fa-solid fa-plus-circle text-orange-400"></i><span>Thêm Ghi Chú Học Tập Mới</span>`;
+          document.getElementById("edit-note-id").value = "";
+        }
+        modal.classList.remove("hidden");
+      }
+
+      function closeNoteModal() {
+        document.getElementById("note-modal").classList.add("hidden");
+      }
+
+      function saveNoteFromModal(e) {
+        e.preventDefault();
+        const editId = document.getElementById("edit-note-id").value;
+        const title = document.getElementById("note-title-input").value.trim();
+        const lessonId = parseInt(
+          document.getElementById("note-lesson-input").value,
+        );
+        const day = document.getElementById("note-day-input").value;
+        const content = document
+          .getElementById("note-content-input")
+          .value.trim();
+        const rawTags = document.getElementById("note-tags-input").value;
+        const important = document.getElementById(
+          "note-important-input",
+        ).checked;
+
+        let tags = rawTags
+          .split(",")
+          .map((t) => t.trim().replace(/^#/, ""))
+          .filter(Boolean);
+        if (tags.length === 0) {
+          tags = extractSmartTags(`${title} ${content}`, lessonId);
+        }
+
+        if (editId) {
+          const idx = notesList.findIndex((n) => n.id === parseInt(editId));
+          if (idx > -1) {
+            notesList[idx] = {
+              ...notesList[idx],
+              title,
+              lessonId,
+              day,
+              content,
+              tags,
+              important,
+              aiSummary: generateSmartSummaryText(content),
+            };
+            showToast("Đã cập nhật ghi chú thành công!", "success");
+          }
+        } else {
+          notesList.unshift({
+            id: Date.now(),
+            lessonId,
+            day,
+            title,
+            content,
+            tags,
+            important,
+            aiSummary: generateSmartSummaryText(content),
+            createdAt: `Hôm nay - ${day}`,
+          });
+          showToast("Đã thêm ghi chú mới vào hệ thống!", "success");
+        }
+
+        saveState();
+        closeNoteModal();
+        renderNotesList();
+      }
+
+      function deleteNote(id) {
+        notesList = notesList.filter((n) => n.id !== id);
+        saveState();
+        renderNotesList();
+        showToast("Đã xóa ghi chú.", "info");
+      }
+
+      function toggleImportantNote(id) {
+        const note = notesList.find((n) => n.id === id);
+        if (note) {
+          note.important = !note.important;
+          saveState();
+          renderNotesList();
+        }
+      }
+
+      function resetSampleNotes() {
+        notesList = [...defaultSampleNotes];
+        saveState();
+        renderNotesList();
+        showToast(
+          "Đã khôi phục 10 ghi chú mẫu chuẩn 6 ngày học tập!",
+          "success",
+        );
+      }
+
+      // =========================================================================
+      // 7. CLIENT-SIDE AI ENGINE (YÊU CẦU Y6: TÓM TẮT, AUTO-TAG, FLASHCARD/QUIZ)
+      // =========================================================================
+      function generateSmartSummaryText(text) {
+        const sentences = text
+          .split(/[.!?]+/)
+          .map((s) => s.trim())
+          .filter((s) => s.length > 10);
+        if (sentences.length <= 1) return text;
+        return `${sentences[0]}. ${sentences[sentences.length - 1]}.`;
+      }
+
+      function extractSmartTags(text, lessonId) {
+        const keywordDict = [
+          { key: "ai", tag: "TriTueNhanTao" },
+          { key: "trí tuệ nhân tạo", tag: "AI" },
+          { key: "chuyển đổi số", tag: "ChuyenDoiSo" },
+          { key: "cmcn", tag: "CMCN4.0" },
+          { key: "iot", tag: "IoT" },
+          { key: "cloud", tag: "CloudComputing" },
+          { key: "đám mây", tag: "DienToanDamMay" },
+          { key: "docker", tag: "Docker" },
+          { key: "hệ điều hành", tag: "OperatingSystem" },
+          { key: "cpu", tag: "PhanCungCPU" },
+          { key: "ram", tag: "BoNhoRAM" },
+          { key: "lượng tử", tag: "Quantum" },
+          { key: "prompt", tag: "PromptEngineering" },
+          { key: "vibe", tag: "VibeCoding" },
+          { key: "thuật toán", tag: "ThuatToan" },
+          { key: "bảo mật", tag: "AnToanThongTin" },
+          { key: "deepfake", tag: "Deepfake" },
+          { key: "luật", tag: "PhapLuatSo" },
+        ];
+        const lower = text.toLowerCase();
+        const found = new Set([`Bai${lessonId}`]);
+        keywordDict.forEach((item) => {
+          if (lower.includes(item.key)) found.add(item.tag);
+        });
+        if (found.size === 1) found.add("CNTT4.0");
+        return Array.from(found).slice(0, 5);
+      }
+
+      function autoSuggestTagsInModal() {
+        const title = document.getElementById("note-title-input").value;
+        const content = document.getElementById("note-content-input").value;
+        const lessonId = parseInt(
+          document.getElementById("note-lesson-input").value,
+        );
+        if (!title && !content) {
+          showToast(
+            "Vui lòng nhập tiêu đề hoặc nội dung trước khi gọi AI gợi ý tag!",
+            "info",
+          );
+          return;
+        }
+        const tags = extractSmartTags(`${title} ${content}`, lessonId);
+        document.getElementById("note-tags-input").value = tags.join(", ");
+        showToast("AI đã phân tích ngữ nghĩa và gợi ý thẻ từ khóa!", "success");
+      }
+
+      function runAiSummarize(noteId) {
+        const note = notesList.find((n) => n.id === noteId);
+        if (!note) return;
+        const summary =
+          note.aiSummary || generateSmartSummaryText(note.content);
+        const output = document.getElementById("ai-assistant-output");
+        output.innerHTML = `
+                <div class="p-4 rounded-xl bg-indigo-50 border border-indigo-200 space-y-2 fade-in">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase text-indigo-700"><i class="fa-solid fa-sparkles mr-1"></i>AI Tóm tắt thông minh</span>
+                        <span class="text-[10px] text-indigo-500 font-semibold">Bài ${note.lessonId} • ${note.day}</span>
+                    </div>
+                    <div class="text-xs font-bold text-slate-900">${note.title}</div>
+                    <p class="text-xs text-slate-700 leading-relaxed bg-white p-3 rounded-lg border border-indigo-100">
+                        "${summary}"
+                    </p>
+                    <div class="text-[11px] text-slate-500 flex items-center justify-between pt-1">
+                        <span>Độ nén thông tin: ~60%</span>
+                        <button onclick="copyTextToClipboard('${summary.replace(/'/g, "\\'")}')" class="text-indigo-700 font-bold hover:underline">
+                            <i class="fa-regular fa-copy mr-1"></i>Sao chép
+                        </button>
+                    </div>
+                </div>
+            `;
+      }
+
+      function runAiAutoTag(noteId) {
+        const note = notesList.find((n) => n.id === noteId);
+        if (!note) return;
+        const newTags = extractSmartTags(
+          `${note.title} ${note.content}`,
+          note.lessonId,
+        );
+        note.tags = Array.from(new Set([...note.tags, ...newTags]));
+        saveState();
+        renderNotesList();
+
+        const output = document.getElementById("ai-assistant-output");
+        output.innerHTML = `
+                <div class="p-4 rounded-xl bg-blue-50 border border-blue-200 space-y-2.5 fade-in">
+                    <div class="text-[11px] font-bold uppercase text-blue-700"><i class="fa-solid fa-tags mr-1"></i>AI Auto-Tagging hoàn tất</div>
+                    <p class="text-xs text-slate-700">Hệ thống NLP đã trích xuất các thực thể và gắn nhãn tự động cho ghi chú <strong>"${note.title}"</strong>:</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${note.tags.map((t) => `<span class="px-2.5 py-1 rounded-full bg-blue-600 text-white text-[11px] font-semibold">#${t}</span>`).join("")}
+                    </div>
+                </div>
+            `;
+        showToast("AI đã cập nhật thẻ từ khóa tự động!", "success");
+      }
+
+      function runAiFlashcard(noteId) {
+        const note = notesList.find((n) => n.id === noteId);
+        if (!note) return;
+        const output = document.getElementById("ai-assistant-output");
+        output.innerHTML = `
+                <div class="p-4 rounded-xl bg-orange-50 border border-orange-200 space-y-3 fade-in">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[11px] font-bold uppercase text-orange-700"><i class="fa-solid fa-bolt mr-1"></i>AI Flashcard Ôn tập</span>
+                        <span class="text-[10px] bg-orange-200/70 text-orange-900 px-2 py-0.5 rounded font-bold">Active Recall</span>
+                    </div>
+                    <div class="bg-white p-3.5 rounded-xl border border-orange-200 shadow-2xs">
+                        <div class="text-[10px] font-bold uppercase text-slate-400 mb-1">Câu hỏi kiểm tra:</div>
+                        <p class="text-xs font-bold text-slate-900">Hãy trình bày nội dung cốt lõi về: "${note.title}"?</p>
+                        <details class="mt-3 group">
+                            <summary class="cursor-pointer text-xs font-bold text-orange-600 hover:text-orange-700 select-none">
+                                <i class="fa-solid fa-eye mr-1"></i> Nhấn để xem đáp án từ ghi chú
+                            </summary>
+                            <div class="mt-2 pt-2 border-t border-slate-100 text-xs text-slate-700 leading-relaxed">
+                                ${note.content}
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            `;
+      }
+
+      function generateGlobalStudyQuiz() {
+        const randomNotes = [...notesList]
+          .sort(() => 0.5 - Math.random())
+          .slice(0, 3);
+        const output = document.getElementById("ai-assistant-output");
+        output.innerHTML = `
+                <div class="p-4 rounded-xl bg-slate-900 text-white space-y-3 fade-in">
+                    <div class="flex items-center justify-between border-b border-slate-700 pb-2">
+                        <span class="text-xs font-bold text-orange-400"><i class="fa-solid fa-graduation-cap mr-1.5"></i>Bộ 3 Câu Hỏi Ôn Bảo Vệ</span>
+                        <span class="text-[10px] text-slate-400">Sinh từ ${notesList.length} ghi chú</span>
+                    </div>
+                    <div class="space-y-2.5">
+                        ${randomNotes
+                          .map(
+                            (n, idx) => `
+                            <div class="p-2.5 rounded-lg bg-slate-800 border border-slate-700 text-xs">
+                                <div class="font-bold text-orange-300 mb-1">Câu ${idx + 1} (Bài ${n.lessonId}):</div>
+                                <p class="text-slate-200 mb-1.5">Giải thích trọng tâm: ${n.title}?</p>
+                                <details>
+                                    <summary class="text-[11px] text-emerald-400 cursor-pointer font-semibold">Xem gợi ý trả lời</summary>
+                                    <p class="text-[11px] text-slate-300 mt-1 pt-1 border-t border-slate-700">${n.aiSummary || n.content}</p>
+                                </details>
+                            </div>
+                        `,
+                          )
+                          .join("")}
+                    </div>
+                </div>
+            `;
+        showToast("AI đã tổng hợp bộ câu hỏi ôn tập vấn đáp!", "success");
+      }
+
+      // =========================================================================
+      // 8. EXPORT REPORT & UTILITY FUNCTIONS (NO ALERT/CONFIRM)
+      // =========================================================================
+      function exportFullAssignmentReport() {
+        const uniqueDays = Array.from(
+          new Set(notesList.map((n) => n.day)),
+        ).sort();
+        let reportText = `BÁO CÁO TỔNG HỢP ASSIGNMENT MÔN CNTT 4.0 - FPT POLYTECHNIC\n`;
+        reportText += `================================================================\n`;
+        reportText += `1. TIẾN ĐỘ THƯ VIỆN SỐ (8 BÀI HỌC): Đã hoàn thành ${completedLessons.length}/8 bài học.\n`;
+        reportText += `2. THỐNG KÊ ỨNG DỤNG QUẢN LÝ GHI CHÚ (Y5):\n`;
+        reportText += `   - Tổng số ghi chú cá nhân: ${notesList.length} ghi chú (Yêu cầu >= 10)\n`;
+        reportText += `   - Số ngày học tập ghi nhận: ${uniqueDays.length} ngày (${uniqueDays.join(", ")}) (Yêu cầu >= 5)\n\n`;
+        reportText += `DANH SÁCH CHI TIẾT GHI CHÚ HỌC TẬP:\n`;
+        notesList.forEach((n, i) => {
+          reportText += `${i + 1}. [${n.day} - Bài ${n.lessonId}] ${n.title}\n   Nội dung: ${n.content}\n   Tags: #${n.tags.join(" #")}\n\n`;
+        });
+
+        copyTextToClipboard(reportText);
+        showToast(
+          "Đã sao chép toàn bộ Báo cáo Assignment vào Clipboard! Bạn có thể dán vào Word/Google Docs.",
+          "success",
+        );
+      }
+
+      function copySystemArchitectureSummary() {
+        const text = `MÔ TẢ KIẾN TRÚC & VẬN HÀNH ỨNG DỤNG SMARTNOTE AI - CNTT 4.0:\n- Y4.a Giao diện chính: Mô hình SPA gồm Thanh điều hướng tiến độ, Thư viện 8 chuyên đề và Không gian làm việc AI.\n- Y4.b Chức năng chính: Học liệu đa phương tiện kèm link tham khảo ngoài, CRUD Ghi chú lọc theo Bài học/Ngày học, Trợ lý AI (Tóm tắt, Auto-Tag, Flashcard).\n- Y4.c Quy trình vận hành: Khai thác học liệu -> Ghi chép đa chiều -> Xử lý ngôn ngữ AI -> Xuất báo cáo bảo vệ.`;
+        copyTextToClipboard(text);
+        showToast(
+          "Đã sao chép nội dung Phác thảo Y4 vào Clipboard!",
+          "success",
+        );
+      }
+
+      function copyTextToClipboard(text) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      function showToast(message, type = "info") {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+        const bgClass = type === "success" ? "bg-emerald-600" : "bg-slate-900";
+        const iconClass =
+          type === "success" ? "fa-circle-check" : "fa-circle-info";
+
+        toast.className = `${bgClass} text-white px-4 py-3 rounded-xl shadow-lg text-xs font-semibold flex items-center gap-2.5 pointer-events-auto fade-in border border-white/10 max-w-sm`;
+        toast.innerHTML = `<i class="fa-solid ${iconClass} text-sm"></i><span>${message}</span>`;
+
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateY(8px)";
+          toast.style.transition = "all 0.3s ease";
+          setTimeout(() => toast.remove(), 300);
+        }, 3200);
+      }
+
+      // =========================================================================
+      // 9. INITIALIZE APPLICATION ON LOAD
+      // =========================================================================
+      window.addEventListener("DOMContentLoaded", () => {
+        renderSidebarLessons();
+        renderLessonDetail(currentLessonId);
+        updateProgressUI();
+        updateNoteStats();
+        renderNotesList();
+      });
+    </script>
+  </body>
+</html>
